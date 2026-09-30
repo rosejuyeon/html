@@ -36,25 +36,10 @@
       box-shadow: 0 0 24px rgba(0, 0, 0, .06);
     }
 
-    /* 상단 행사명 */
-    .top {
-      background: var(--navy);
-      color: #fff;
-      text-align: center;
-      padding: 14px 16px 13px;
-      padding-top: calc(14px + env(safe-area-inset-top));
-    }
-    .top .year { font-size: 12px; letter-spacing: .12em; opacity: .75; font-weight: 500; }
-    .top h1 { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-top: 2px; }
-    .top h1 b { color: #ff5a5f; font-weight: 800; }
 
     /* 키비주얼 */
-    .kv { position: relative; background: #fff; }
+    .kv { background: #fff; }
     .kv img { display: block; width: 100%; height: auto; }
-    .kv::after {
-      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
-      background: linear-gradient(90deg, var(--red) 0 50%, var(--navy) 50% 100%);
-    }
 
     /* 버튼 */
     .menu { padding: 26px 20px 8px; flex: 1; }
@@ -88,15 +73,6 @@
     .btn-line { background: #fff; color: var(--navy); border: 2px solid var(--navy); }
     .btn-line .ico { background: #eef0f8; }
 
-    /* 행사 정보 */
-    .info {
-      margin: 22px 20px 0; padding: 16px 18px;
-      background: #f6f7fa; border-radius: 12px;
-      font-size: 14px; color: #3c3839;
-    }
-    .info dl { display: grid; grid-template-columns: 44px 1fr; row-gap: 6px; }
-    .info dt { font-weight: 700; color: var(--navy); }
-    .info dd em { font-style: normal; color: var(--gray); font-size: 13px; }
 
     footer {
       padding: 22px 20px;
@@ -108,11 +84,6 @@
 </head>
 <body>
   <div class="wrap">
-    <header class="top">
-      <p class="year">2026 AMXPO</p>
-      <h1>아시아 기계 <b>&amp;</b> 제조 산업전</h1>
-    </header>
-
     <div class="kv">
       <img src="images/keyvisual.jpg" width="842" height="1032"
            alt="AMXPO Asia Machinery &amp; Manufacturing Expo Korea 아시아 기계 &amp; 제조 산업전 2026.10.21(수)~23(금) 킨텍스">
@@ -138,13 +109,6 @@
       </a>
       </nav>
     </main>
-
-    <section class="info" aria-label="행사 정보">
-      <dl>
-        <dt>일시</dt><dd>2026. 10. 21(수) ~ 23(금)<br>10:00 ~ 17:00 <em>(23일 ~16:00)</em></dd>
-        <dt>장소</dt><dd>킨텍스 (KINTEX)</dd>
-      </dl>
-    </section>
 
     <footer>
       AMXPO 사무국<br>
