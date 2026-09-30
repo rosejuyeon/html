@@ -14,7 +14,7 @@
       --ink: #231f20;
       --gray: #6d6f71;
       --line: #e3e3e8;
-      --bg: #eef0f4;
+      --bg: #fff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-text-size-adjust: 100%; }
@@ -27,13 +27,10 @@
     }
     .wrap {
       max-width: 480px;
-      min-height: 100vh;
-      min-height: 100dvh;
       margin: 0 auto;
       background: #fff;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 0 24px rgba(0, 0, 0, .06);
     }
 
 
@@ -42,7 +39,7 @@
     .kv img { display: block; width: 100%; height: auto; }
 
     /* 버튼 */
-    .menu { padding: 26px 20px 8px; flex: 1; }
+    .menu { padding: 26px 20px 32px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
     .menu .sub {
       display: flex; align-items: center; gap: 8px;
       font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px;
@@ -74,12 +71,6 @@
     .btn-line .ico { background: #eef0f8; }
 
 
-    footer {
-      padding: 22px 20px;
-      padding-bottom: calc(22px + env(safe-area-inset-bottom));
-      text-align: center; font-size: 12px; color: var(--gray); line-height: 1.7;
-    }
-    footer a { color: inherit; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -110,11 +101,6 @@
       </nav>
     </main>
 
-    <footer>
-      AMXPO 사무국<br>
-      T. <a href="tel:02-369-7800">02-369-7800</a> · E. <a href="mailto:info@amxpo.org">info@amxpo.org</a><br>
-      <a href="https://amxpo.org/main/" target="_blank" rel="noopener">www.amxpo.org</a>
-    </footer>
   </div>
 </body>
 </html>
