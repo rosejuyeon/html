@@ -39,6 +39,8 @@
     td.group[rowspan], td.company[rowspan] { background-color: #f7faf8; }
     td.company { font-weight: 650; }
     td.phone { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    td.phone a { color: var(--accent); font-weight: 650; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #1f655766; }
+    td.phone a:active { opacity: .7; }
     td.duty { text-align: left; }
     .empty { color: #9ba8a4; }
     footer { margin-top: 14px; color: var(--muted); font-size: 12px; }
@@ -67,22 +69,22 @@
           <tr><th scope="col">구분</th><th scope="col">회사명</th><th scope="col">담당자</th><th scope="col">연락처</th><th scope="col">담당 업무</th></tr>
         </thead>
         <tbody>
-          <tr><td class="group" rowspan="5">주최/주관</td><td class="company" rowspan="5">코아미메세(주)</td><td>김지영 팀장</td><td class="phone">010-9493-6637</td><td class="duty">실무총괄</td></tr>
-          <tr><td>김재신 매니저</td><td class="phone">010-7741-5193</td><td class="duty">현장운영</td></tr>
-          <tr><td>조수현 매니저</td><td class="phone">010-9403-2183</td><td class="duty">마케팅/홍보</td></tr>
-          <tr><td>서유리 매니저</td><td class="phone">010-8570-7931</td><td class="duty">컨퍼런스/상담회</td></tr>
-          <tr><td>서동준 매니저</td><td class="phone">010-7561-1776</td><td class="duty">회계</td></tr>
-          <tr><td class="group">원상복구 미화</td><td class="company">킨텍스플러스</td><td>허윤영 팀장</td><td class="phone">010-6865-2777</td><td class="duty">앵커볼트 등 미화</td></tr>
-          <tr><td class="group">장치(부대시설)</td><td class="company">중앙전람</td><td>김진하 실장</td><td class="phone">010-5105-1015</td><td class="duty">부스 및 부대행사장 장치, 파이텍스, 전기, 부대시설 총괄</td></tr>
-          <tr><td class="group">비품</td><td class="company">세종이앤알</td><td>김세미 과장</td><td class="phone">010-4929-3340</td><td class="duty">가구비품</td></tr>
-          <tr><td class="group">등록</td><td class="company">고벤트</td><td>안주연 선임매니저</td><td class="phone">010-8563-5174</td><td class="duty">등록/참관객 등록 시스템</td></tr>
-          <tr><td class="group">보안 경비</td><td class="company">제이더블유시스템</td><td>조성훈 대표이사</td><td class="phone">010-8975-0265</td><td class="duty">전시장 보안</td></tr>
-          <tr><td class="group">물류운송(중장비)</td><td class="company">KUNG</td><td>김혁명 실장</td><td class="phone">010-6623-4831</td><td class="duty">중장비 지원 (지게차, 크레인)</td></tr>
-          <tr><td class="group">인터넷</td><td class="company">KT</td><td>김민성 실장</td><td class="phone">010-4011-4138</td><td class="duty">인터넷</td></tr>
-          <tr><td class="group">재난대응기관</td><td class="company">고양시 재난대응과</td><td class="empty">—</td><td class="phone">031-8075-3011</td><td class="duty empty">—</td></tr>
-          <tr><td class="group">치안기관</td><td class="company">대화동 지구대</td><td class="empty">—</td><td class="phone">031-925-0112</td><td class="duty empty">—</td></tr>
-          <tr><td class="group">소방기관</td><td class="company">일산소방서</td><td class="empty">—</td><td class="phone">031-930-0529</td><td class="duty empty">—</td></tr>
-          <tr><td class="group">의료기관</td><td class="company">일산백병원</td><td class="empty">—</td><td class="phone">031-910-7114</td><td class="duty empty">—</td></tr>
+          <tr><td class="group" rowspan="5">주최/주관</td><td class="company" rowspan="5">코아미메세(주)</td><td>김지영 팀장</td><td class="phone"><a href="tel:01094936637">010-9493-6637</a></td><td class="duty">실무총괄</td></tr>
+          <tr><td>김재신 매니저</td><td class="phone"><a href="tel:01077415193">010-7741-5193</a></td><td class="duty">현장운영</td></tr>
+          <tr><td>조수현 매니저</td><td class="phone"><a href="tel:01094032183">010-9403-2183</a></td><td class="duty">마케팅/홍보</td></tr>
+          <tr><td>서유리 매니저</td><td class="phone"><a href="tel:01085707931">010-8570-7931</a></td><td class="duty">컨퍼런스/상담회</td></tr>
+          <tr><td>서동준 매니저</td><td class="phone"><a href="tel:01075611776">010-7561-1776</a></td><td class="duty">회계</td></tr>
+          <tr><td class="group">원상복구 미화</td><td class="company">킨텍스플러스</td><td>허윤영 팀장</td><td class="phone"><a href="tel:01068652777">010-6865-2777</a></td><td class="duty">앵커볼트 등 미화</td></tr>
+          <tr><td class="group">장치(부대시설)</td><td class="company">중앙전람</td><td>김진하 실장</td><td class="phone"><a href="tel:01051051015">010-5105-1015</a></td><td class="duty">부스 및 부대행사장 장치, 파이텍스, 전기, 부대시설 총괄</td></tr>
+          <tr><td class="group">비품</td><td class="company">세종이앤알</td><td>김세미 과장</td><td class="phone"><a href="tel:01049293340">010-4929-3340</a></td><td class="duty">가구비품</td></tr>
+          <tr><td class="group">등록</td><td class="company">고벤트</td><td>안주연 선임매니저</td><td class="phone"><a href="tel:01085635174">010-8563-5174</a></td><td class="duty">등록/참관객 등록 시스템</td></tr>
+          <tr><td class="group">보안 경비</td><td class="company">제이더블유시스템</td><td>조성훈 대표이사</td><td class="phone"><a href="tel:01089750265">010-8975-0265</a></td><td class="duty">전시장 보안</td></tr>
+          <tr><td class="group">물류운송(중장비)</td><td class="company">KUNG</td><td>김혁명 실장</td><td class="phone"><a href="tel:01066234831">010-6623-4831</a></td><td class="duty">중장비 지원 (지게차, 크레인)</td></tr>
+          <tr><td class="group">인터넷</td><td class="company">KT</td><td>김민성 실장</td><td class="phone"><a href="tel:01040114138">010-4011-4138</a></td><td class="duty">인터넷</td></tr>
+          <tr><td class="group">재난대응기관</td><td class="company">고양시 재난대응과</td><td class="empty">—</td><td class="phone"><a href="tel:03180753011">031-8075-3011</a></td><td class="duty empty">—</td></tr>
+          <tr><td class="group">치안기관</td><td class="company">대화동 지구대</td><td class="empty">—</td><td class="phone"><a href="tel:0319250112">031-925-0112</a></td><td class="duty empty">—</td></tr>
+          <tr><td class="group">소방기관</td><td class="company">일산소방서</td><td class="empty">—</td><td class="phone"><a href="tel:0319300529">031-930-0529</a></td><td class="duty empty">—</td></tr>
+          <tr><td class="group">의료기관</td><td class="company">일산백병원</td><td class="empty">—</td><td class="phone"><a href="tel:0319107114">031-910-7114</a></td><td class="duty empty">—</td></tr>
         </tbody>
       </table>
     </div>
