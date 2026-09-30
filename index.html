@@ -36,11 +36,7 @@
     th + th, td + td { border-left: 1px solid var(--line); }
     tbody tr:hover { background: #f8fbf9; }
     td.group { background: #f7faf8; color: #344e47; font-weight: 700; }
-    /* Keep row dividers visible through cells that span several contact rows. */
-    td.group[rowspan], td.company[rowspan] {
-      background-color: #f7faf8;
-      background-image: repeating-linear-gradient(to bottom, transparent 0 46px, var(--line) 46px 47px);
-    }
+    td.group[rowspan], td.company[rowspan] { background-color: #f7faf8; }
     td.company { font-weight: 650; }
     td.phone { font-variant-numeric: tabular-nums; white-space: nowrap; }
     td.duty { text-align: left; }
