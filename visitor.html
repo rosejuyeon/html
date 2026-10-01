@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>2026 AMXPO 아시아 기계 &amp; 제조 산업전 | 참관객 안내</title>
+  <meta name="description" content="2026 AMXPO 아시아 기계 & 제조 산업전 · 2026.10.21(수) ~ 23(금) 킨텍스">
+  <meta name="theme-color" content="#25255e">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    :root {
+      --red: #cd252b;
+      --navy: #25255e;
+      --ink: #231f20;
+      --gray: #6d6f71;
+      --line: #e3e3e8;
+      --bg: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      word-break: keep-all;
+    }
+    .wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+
+    /* 키비주얼 */
+    .kv { background: #fff; }
+    .kv img { display: block; width: 100%; height: auto; }
+
+    /* 버튼 */
+    .menu { padding: 26px 20px 32px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+    .menu .sub {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px;
+    }
+    .menu .sub::before { content: ""; width: 4px; height: 16px; border-radius: 2px; background: var(--red); }
+    .btns { display: grid; gap: 12px; }
+    .btn {
+      display: flex; align-items: center; gap: 14px;
+      min-height: 64px; padding: 0 18px;
+      border-radius: 14px;
+      font-size: 18px; font-weight: 700; letter-spacing: -.02em;
+      text-decoration: none;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(.98); filter: brightness(.95); }
+    .btn:focus-visible { outline: 3px solid #ffb400; outline-offset: 2px; }
+    .btn .ico {
+      flex: none; width: 38px; height: 38px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: rgba(255, 255, 255, .16);
+    }
+    .btn svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn .label { flex: 1; }
+    .btn .arrow { font-size: 28px; font-weight: 300; line-height: 1; opacity: .8; }
+    .btn-red  { background: var(--red);  color: #fff; box-shadow: 0 6px 16px rgba(205, 37, 43, .28); }
+    .btn-navy { background: var(--navy); color: #fff; box-shadow: 0 6px 16px rgba(37, 37, 94, .25); }
+    .btn-line { background: #fff; color: var(--navy); border: 2px solid var(--navy); }
+    .btn-line .ico { background: #eef0f8; }
+
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="kv">
+      <img src="images/keyvisual.jpg" width="1350" height="345"
+           alt="AMXPO Asia Machinery &amp; Manufacturing Expo Korea">
+    </div>
+
+    <main class="menu">
+      <h2 class="sub">참관객 안내</h2>
+      <nav class="btns">
+      <a class="btn btn-red" href="https://amxpo.org/main/" target="_blank" rel="noopener">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+        <span class="label">전시회 홈페이지</span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+      <a class="btn btn-navy" href="https://imkm2026.amxpo.org/showroom/list.do" target="_blank" rel="noopener">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/><path d="M15 9v12"/></svg></span>
+        <span class="label">부스배치도</span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+      <a class="btn btn-line" href="https://amxpo.org/main/?mc_code=121111" target="_blank" rel="noopener">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="M8 14h3"/><path d="M8 18h8"/></svg></span>
+        <span class="label">프로그램</span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+      </nav>
+    </main>
+
+  </div>
+</body>
+</html>
