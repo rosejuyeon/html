@@ -33,6 +33,8 @@
     th { padding: 15px 14px; color: #29453e; font-size: 13px; font-weight: 750; white-space: nowrap; }
     td { padding: 12px 14px; border-top: 1px solid var(--line); }
     th + th, td + td { border-left: 1px solid var(--line); }
+    /* The first cell in each continued rowspan row is the 담당자 column. */
+    tbody tr > td:first-child:not(.group):not(.company) { border-left: 1px solid var(--line); }
     tbody tr:hover { background: #f8fbf9; }
     td.group { background: #f7faf8; color: #344e47; font-weight: 700; }
     td.company { font-weight: 650; }
