@@ -91,37 +91,5 @@
     </div>
     <footer>연락처는 제공된 자료를 기준으로 정리했습니다.</footer>
   </main>
-  <script>
-    function alignMergedCellDividers() {
-      const table = document.querySelector("table");
-      if (!table) return;
-
-      for (const cell of table.querySelectorAll("td[rowspan]")) {
-        const rows = Array.from(cell.parentElement.parentElement.rows);
-        const start = rows.indexOf(cell.parentElement);
-        const top = cell.getBoundingClientRect().top;
-        const positions = [];
-
-        for (let offset = 1; offset < cell.rowSpan; offset += 1) {
-          const nextRow = rows[start + offset];
-          if (nextRow) positions.push(`${Math.round(nextRow.getBoundingClientRect().top - top)}px`);
-        }
-
-        cell.style.backgroundImage = positions.map(() => "linear-gradient(var(--line), var(--line))").join(",");
-        cell.style.backgroundSize = positions.map(() => "100% 1px").join(",");
-        cell.style.backgroundPosition = positions.map(position => `left ${position}`).join(",");
-        cell.style.backgroundRepeat = "no-repeat";
-        cell.style.backgroundOrigin = "border-box";
-      }
-    }
-
-    alignMergedCellDividers();
-    window.addEventListener("resize", alignMergedCellDividers);
-    if (document.fonts?.ready) document.fonts.ready.then(alignMergedCellDividers);
-    if ("ResizeObserver" in window) {
-      const table = document.querySelector("table");
-      if (table) new ResizeObserver(alignMergedCellDividers).observe(table);
-    }
-  </script>
 </body>
 </html>
