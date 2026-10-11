@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>참가기업 리스트</title>
+  <meta name="theme-color" content="#25255e">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    :root {
+      --navy: #25255e;
+      --red: #cd252b;
+      --ink: #1d1d26;
+      --muted: #6b6f7b;
+      --line: #e4e6ec;
+      --soft: #f5f6f9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: #fff;
+      color: var(--ink);
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+
+    header { padding: 28px 20px 16px; padding-top: calc(28px + env(safe-area-inset-top)); }
+    header h1 { font-size: 24px; font-weight: 800; letter-spacing: -.03em; }
+    header p { margin-top: 4px; font-size: 14px; color: var(--muted); }
+    header p b { color: var(--navy); }
+
+    /* 검색 + 필터 (스크롤해도 상단 고정) */
+    .tools {
+      position: sticky; top: 0; z-index: 2;
+      background: rgba(255, 255, 255, .96);
+      backdrop-filter: blur(6px);
+      padding: 10px 20px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .search { position: relative; }
+    .search svg {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round;
+    }
+    .search input {
+      width: 100%; height: 46px; padding: 0 40px 0 42px;
+      border: 1.5px solid var(--line); border-radius: 12px;
+      font: inherit; font-size: 16px; color: var(--ink); background: var(--soft);
+      -webkit-appearance: none; appearance: none;
+    }
+    .search input::-webkit-search-cancel-button { display: none; -webkit-appearance: none; }
+    .search input:focus { outline: none; border-color: var(--navy); background: #fff; }
+    .search .clear {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      width: 30px; height: 30px; border: 0; border-radius: 50%;
+      background: #dfe2ea; color: #555; font-size: 16px; line-height: 30px; cursor: pointer;
+      display: none;
+    }
+    .search.has-value .clear { display: block; }
+
+    .chips {
+      display: flex; gap: 6px; margin-top: 10px;
+      overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+      margin-right: -20px; padding-right: 20px;
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      flex: none; height: 34px; padding: 0 13px;
+      border: 1.5px solid var(--line); border-radius: 999px; background: #fff;
+      font: inherit; font-size: 13px; font-weight: 600; color: #444; cursor: pointer; white-space: nowrap;
+    }
+    .chip .n { margin-left: 4px; color: var(--muted); font-weight: 500; }
+    .chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+    .chip[aria-pressed="true"] .n { color: rgba(255, 255, 255, .7); }
+
+    /* 리스트 */
+    .head, .row {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      align-items: center; gap: 12px;
+      padding: 12px 20px;
+    }
+    .head { display: none; }
+    .row { border-bottom: 1px solid var(--line); }
+    .booth {
+      justify-self: start;
+      min-width: 52px; padding: 5px 8px; border-radius: 8px;
+      background: var(--soft); color: var(--navy);
+      font-size: 15px; font-weight: 800; text-align: center; font-variant-numeric: tabular-nums;
+    }
+    .names { min-width: 0; }
+    .ko { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+    .en { font-size: 13px; color: var(--muted); margin-top: 1px; }
+    .type {
+      justify-self: end;
+      padding: 4px 9px; border-radius: 6px;
+      font-size: 12px; font-weight: 600; white-space: nowrap;
+    }
+    .t-oct  { background: #eaf1ff; color: #1f4fb0; }
+    .t-self { background: #fdeceb; color: #b4232a; }
+    .t-blk  { background: #e9f6ef; color: #1b7a4b; }
+    .t-lgt  { background: #fff4e0; color: #9a5b00; }
+    .t-none { background: #f0f0f3; color: #7b7e88; }
+    mark { background: #fff1a8; color: inherit; border-radius: 2px; }
+
+    .empty { display: none; padding: 60px 20px; text-align: center; color: var(--muted); font-size: 15px; }
+    .empty.show { display: block; }
+
+    @media (max-width: 420px) {
+      .head, .row { grid-template-columns: 56px 1fr; row-gap: 6px; }
+      .type { grid-column: 2; justify-self: start; }
+    }
+    @media (min-width: 720px) {
+      header { padding-left: 24px; padding-right: 24px; }
+      .tools { padding-left: 24px; padding-right: 24px; }
+      .chips { flex-wrap: wrap; overflow: visible; margin-right: 0; padding-right: 0; }
+      .head, .row { grid-template-columns: 80px 1fr 1fr 160px; padding: 12px 24px; }
+      .head {
+        display: grid; background: var(--soft); border-bottom: 1px solid var(--line);
+        font-size: 13px; font-weight: 700; color: var(--navy);
+      }
+      .names { display: contents; }
+      .en { font-size: 15px; color: #444; margin: 0; }
+      .type { justify-self: start; }
+      .row:hover { background: #fafbfd; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>참가기업 리스트</h1>
+      <p>총 <b id="total">0</b>개 기업</p>
+    </header>
+
+    <div class="tools">
+      <div class="search" id="searchBox">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="기업명 또는 부스번호 검색" autocomplete="off" aria-label="기업명 또는 부스번호 검색">
+        <button class="clear" id="clear" type="button" aria-label="검색어 지우기">×</button>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="부스 타입 필터"></div>
+    </div>
+
+    <div class="head" aria-hidden="true"><span>부스</span><span>기업명(국문)</span><span>기업명(영문)</span><span>부스 타입</span></div>
+    <div id="list"></div>
+    <p class="empty" id="empty">검색 결과가 없습니다.</p>
+  </div>
+
+  <script>
+    // 부스 | 기업명(국문) | 기업명(영문) | 부스 타입
+    const DATA = [
+      ["1", "시믹코리아", "CMIC Korea", "Octanium (Standard)"],
+      ["2", "㈜지씨씨엘", "GCCL", "Self-Construction"],
+      ["3", "메리트 씨알오", "MERIT CRO, Inc.", "Self-Construction"],
+      ["4", "타이메이 테크놀로지", "Taimei Technology", "Block System A"],
+      ["5", "데이터포라이프", "Data4Life", "Octanium (Standard)"],
+      ["6", "메디안 테크놀로지", "Median Technologies", "Octanium (Standard)"],
+      ["7", "㈜엘에스케이글로벌파마서비스", "LSK Global PS", "Self-Construction"],
+      ["8", "써모 피셔 사이언티픽", "Thermo Fisher Scientific", "Octanium (Standard)"],
+      ["9", "메디라마", "MediRama", "Block System A"],
+      ["12", "시네오스 헬스", "Syneos Health", "Lighting Booth"],
+      ["15", "카탈란트", "Catalent", "Lighting Booth"],
+      ["16", "피에스아이 씨알오", "PSI CRO", "Lighting Booth"],
+      ["19", "노보텍", "Novotech", "Block System C"],
+      ["20", "에이씨엠글로벌래버러토리스", "ACM Global Laboratories", "Self-Construction"],
+      ["23", "에스씨엘헬스케어", "SCL Healthcare", "Self-Construction"],
+      ["24", "클라리오", "Clario", "Lighting Booth"],
+      ["25", "㈜브레디스헬스케어", "Bredis Healthcare Inc.", "Self-Construction"],
+      ["28", "한국넥스트로브 유한회사", "NEXTROVE KOREA LLC", "Block System C"],
+      ["29", "메드페이스", "Medpace", "Self-Construction"],
+      ["30", "클립스비엔씨", "Clips BnC", "Block System A"],
+      ["31", "퍼셉티브", "Perceptive", "Lighting Booth"],
+      ["32", "헝가로트라이얼", "HungaroTrial CRO", "Block System A"],
+      ["33", "오피스", "OPIS", "Block System A"],
+      ["34", "프론티지", "Frontage Laboratories, Inc.", "Self-Construction"],
+      ["35", "서타라코리아 유한회사", "Certara", "Block System A"],
+      ["36", "Ultragenic Research and Technologies", "Ultragenic Research and Technologies", "Octanium (Standard)"],
+      ["37", "㈜심유", "SYMYOO Co., Ltd.", "Octanium (Standard)"],
+      ["38", "유투엑스랩", "U2XLab Co., Ltd.", "Self-Construction"],
+      ["39", "분당서울대학교병원", "Seoul National University Bundang Hospital", "Block System A"],
+      ["39", "서울대학교병원", "Seoul National University Hospital", "Block System A"],
+      ["47", "랩콥", "Labcorp", "Self-Construction"],
+      ["48", "메디데이터", "Medidata", "Self-Construction"],
+      ["49", "주식회사 단테비전", "DanteVision Inc.", "Octanium (Standard)"],
+      ["50", "알막 그룹", "Almac Group", "Block System C"],
+      ["51", "애크메드", "ACCMED", "Block System A"],
+      ["52", "뉴로핏", "Neurophet", "Self-Construction"],
+      ["53", "㈜비엑스플랜트", "BX PLANT Co., Ltd", "Block System C"],
+      ["54", "오리곤 랩스 리미티드", "Aurigon Labs LTD", "Octanium (Standard)"],
+      ["55", "프리시전 포 메디슨", "Precision for Medicine", "Block System B"],
+      ["56", "오라클", "Oracle", "Block System A"],
+      ["57", "HLB바이오스텝㈜", "HLBbiostep", "Octanium (Standard)"],
+      ["58", "나눔스페이스", "Nanum Space Co., Ltd", "Octanium (Standard)"],
+      ["59", "스마트임상시험신기술개발연구사업단", "SmartTech Clinical Research Center", "Octanium (Standard)"],
+      ["10-11", "드림씨아이에스", "DreamCIS", "Self-Construction"],
+      ["13-14", "포트리아 코리아 유한회사", "Fortrea Korea Limited", "Octanium (Standard)"],
+      ["17-18", "페니트리움 바이오사이언스", "PENETRIUM BIOSCIENCE", "Self-Construction"],
+      ["21-22", "셀타스퀘어", "SeltaSquare", "Block System A"],
+      ["26-27", "제이앤피메디", "JNPMEDI", "Self-Construction"],
+      ["40-41", "카카오헬스케어", "Kakao Healthcare Corp.", "Self-Construction"],
+      ["42-43", "파렉셀", "Parexel", "Lighting Booth"],
+      ["44-46", "㈜씨엔알리서치", "C&R Research Inc.", "Self-Construction"],
+      ["44-46", "ABC Bioscience Co., Ltd.", "ABC Bioscience Co., Ltd.", "No Booth"],
+      ["44-46", "C&R SMO Inc.", "C&R SMO Inc.", "No Booth"],
+      ["44-46", "Mediplexus Co., Ltd.", "Mediplexus Co., Ltd.", "No Booth"],
+      ["44-46", "TI Image Pte. Ltd.", "TI Image Pte. Ltd.", "No Booth"],
+      ["44-46", "Trial Informatics Inc.", "Trial Informatics Inc.", "No Booth"]
+    ];
+
+    const TYPE_CLASS = {
+      'Octanium (Standard)': 't-oct',
+      'Self-Construction': 't-self',
+      'Block System A': 't-blk',
+      'Block System B': 't-blk',
+      'Block System C': 't-blk',
+      'Lighting Booth': 't-lgt',
+      'No Booth': 't-none'
+    };
+    const TYPE_ORDER = Object.keys(TYPE_CLASS);
+
+    // 부스번호 앞자리 숫자 순으로 정렬 (같은 번호는 원래 순서 유지)
+    const rows = DATA
+      .map((r, i) => ({ booth: r[0], ko: r[1], en: r[2], type: r[3], i, start: parseInt(r[0], 10) }))
+      .sort((a, b) => a.start - b.start || a.i - b.i);
+
+    const $ = id => document.getElementById(id);
+    const list = $('list'), q = $('q');
+    let activeType = '';
+
+    $('total').textContent = rows.length;
+
+    // 필터 칩
+    const counts = rows.reduce((m, r) => (m[r.type] = (m[r.type] || 0) + 1, m), {});
+    const chipDefs = [['', '전체', rows.length]].concat(
+      TYPE_ORDER.filter(t => counts[t]).map(t => [t, t, counts[t]])
+    );
+    chipDefs.forEach(([value, label, n]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.dataset.type = value;
+      b.setAttribute('aria-pressed', value === '' ? 'true' : 'false');
+      b.append(label);
+      const s = document.createElement('span');
+      s.className = 'n';
+      s.textContent = n;
+      b.append(s);
+      b.addEventListener('click', () => {
+        activeType = value;
+        document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === b ? 'true' : 'false'));
+        render();
+      });
+      $('chips').append(b);
+    });
+
+    // 검색어 하이라이트 (textContent 기반으로 안전하게 생성)
+    function highlight(el, text, term) {
+      el.textContent = '';
+      if (!term) { el.textContent = text; return; }
+      const lower = text.toLowerCase();
+      let pos = 0, hit;
+      while ((hit = lower.indexOf(term, pos)) !== -1) {
+        el.append(text.slice(pos, hit));
+        const m = document.createElement('mark');
+        m.textContent = text.slice(hit, hit + term.length);
+        el.append(m);
+        pos = hit + term.length;
+      }
+      el.append(text.slice(pos));
+    }
+
+    function render() {
+      const term = q.value.trim().toLowerCase();
+      $('searchBox').classList.toggle('has-value', q.value.length > 0);
+      const shown = rows.filter(r =>
+        (!activeType || r.type === activeType) &&
+        (!term || (r.booth + ' ' + r.ko + ' ' + r.en).toLowerCase().includes(term))
+      );
+      const frag = document.createDocumentFragment();
+      shown.forEach(r => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        const booth = document.createElement('span');
+        booth.className = 'booth';
+        highlight(booth, r.booth, term);
+        const names = document.createElement('div');
+        names.className = 'names';
+        const ko = document.createElement('div');
+        ko.className = 'ko';
+        highlight(ko, r.ko, term);
+        const en = document.createElement('div');
+        en.className = 'en';
+        highlight(en, r.en, term);
+        names.append(ko, en);
+        const type = document.createElement('span');
+        type.className = 'type ' + (TYPE_CLASS[r.type] || 't-none');
+        type.textContent = r.type;
+        row.append(booth, names, type);
+        frag.append(row);
+      });
+      list.replaceChildren(frag);
+      $('empty').classList.toggle('show', shown.length === 0);
+    }
+
+    q.addEventListener('input', render);
+    $('clear').addEventListener('click', () => { q.value = ''; q.focus(); render(); });
+    render();
+  </script>
+</body>
+</html>
