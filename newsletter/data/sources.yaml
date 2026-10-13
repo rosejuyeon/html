@@ -1,0 +1,98 @@
+# 뉴스레터 정보 소스 목록 (자동화 대비)
+# - priority: 1 = 필수, 2 = 확장 후보
+# - method: crawl | api | rss | search | watch(페이지 변경 감지) | manual
+# - verified: 실제 접속 확인 날짜 (미확인 시 null)
+# 사람이 읽는 설명은 ../02-sources.md 참고
+
+venues:
+  - id: coex
+    name: 코엑스
+    region: 서울 강남
+    url: https://www.coex.co.kr
+    calendar_url: null      # 파일럿 때 일정 페이지 URL 확인 후 기입
+    method: crawl
+    priority: 1
+    verified: null
+
+  - id: coex_magok
+    name: 코엑스마곡
+    region: 서울 강서
+    url: null               # 코엑스 사이트 내 메뉴인지 별도 사이트인지 확인 필요
+    calendar_url: null
+    method: crawl
+    priority: 1
+    verified: null
+
+  - id: kintex
+    name: 킨텍스
+    region: 경기 고양
+    url: https://www.kintex.com
+    calendar_url: null
+    method: crawl
+    priority: 1
+    verified: null
+
+  - id: bexco
+    name: 벡스코
+    region: 부산
+    url: https://www.bexco.co.kr
+    calendar_url: null
+    method: crawl
+    priority: 1
+    verified: null
+
+  # --- 확장 후보 ---
+  - { id: at_center, name: aT센터, region: 서울 양재, method: crawl, priority: 2, verified: null }
+  - { id: setec, name: SETEC, region: 서울 대치, method: crawl, priority: 2, verified: null }
+  - { id: songdo_convensia, name: 송도컨벤시아, region: 인천, method: crawl, priority: 2, verified: null }
+  - { id: suwon_cc, name: 수원컨벤션센터, region: 경기 수원, method: crawl, priority: 2, verified: null }
+  - { id: dcc, name: 대전컨벤션센터, region: 대전, method: crawl, priority: 2, verified: null }
+  - { id: exco, name: EXCO, region: 대구, method: crawl, priority: 2, verified: null }
+  - { id: kdj_center, name: 김대중컨벤션센터, region: 광주, method: crawl, priority: 2, verified: null }
+  - { id: ceco, name: 창원컨벤션센터, region: 경남 창원, method: crawl, priority: 2, verified: null }
+  - { id: hico, name: 경주화백컨벤션센터, region: 경북 경주, method: crawl, priority: 2, verified: null }
+  - { id: icc_jeju, name: ICC JEJU, region: 제주, method: crawl, priority: 2, verified: null }
+
+aggregators:
+  - { id: akei, name: 한국전시산업진흥회 전시 포털, method: crawl, note: venue 누락분 교차 확인, verified: null }
+  - { id: data_go_kr, name: 공공데이터포털, url: https://www.data.go.kr, method: api, note: 전시·행사 Open API 존재 여부 확인, verified: null }
+  - { id: korea_mice_bureau, name: 한국관광공사 코리아MICE뷰로, method: crawl, note: 국제회의 일정, verified: null }
+
+news:
+  keywords:
+    - MICE
+    - 전시컨벤션
+    - 컨벤션센터
+    - 국제회의 유치
+    - 전시회 개최
+    - 코엑스
+    - 킨텍스
+    - 벡스코
+    - 코엑스마곡
+    - PCO
+    - 이벤트테크
+  sources:
+    - { name: 문화체육관광부 보도자료, method: rss, verified: null }
+    - { name: 한국MICE협회, method: crawl, verified: null }
+    - { name: 한국전시산업진흥회, method: crawl, verified: null }
+    - { name: Skift Meetings, method: rss, lang: en, verified: null }
+    - { name: TSNN, method: rss, lang: en, verified: null }
+    - { name: UFI News, method: crawl, lang: en, verified: null }
+
+competitors:
+  # 영업팀 확인 후 보강. watch_urls에는 공지/블로그/릴리스노트 페이지를 넣는다.
+  domestic_registration: []   # 국내 등록·출입관리 대행 업체 (사내 리스트로 채움)
+  domestic_platform:
+    - { name: 이벤터스, watch_urls: [], verified: null }
+    - { name: 온오프믹스, watch_urls: [], verified: null }
+    - { name: 페스타, watch_urls: [], verified: null }
+  ticketing:
+    - { name: 인터파크(NOL) 티켓, watch_urls: [], verified: null }
+    - { name: 티켓링크, watch_urls: [], verified: null }
+    - { name: YES24 티켓, watch_urls: [], verified: null }
+  global_eventtech:
+    - { name: Cvent, watch_urls: [], verified: null }
+    - { name: Swapcard, watch_urls: [], verified: null }
+    - { name: Bizzabo, watch_urls: [], verified: null }
+    - { name: EventsAir, watch_urls: [], verified: null }
+    - { name: Eventbrite, watch_urls: [], verified: null }
