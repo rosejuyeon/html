@@ -19,6 +19,7 @@ MICE 업계 동향, 국내 주요 venue 행사 캘린더, 동종(등록) 업체 
 | [04-automation-roadmap.md](04-automation-roadmap.md) | 자동화 로드맵: 수동 → 반자동 → 자동 단계별 계획 |
 | [templates/newsletter-template.md](templates/newsletter-template.md) | 매 호 작성용 템플릿 |
 | [data/sources.yaml](data/sources.yaml) | 자동화 대비 소스 목록(기계가 읽을 수 있는 형태) |
+| [reference/company-profile.md](reference/company-profile.md) | 자사(고벤트) 프로필 요약 + 경쟁사 비교용 기능 체크리스트 |
 | `issues/` | 발행 호별 원고 (`YYYY-MM.md` 또는 `YYYY-Www.md`) |
 
 ## 진행 단계 (요약)
@@ -34,5 +35,5 @@ MICE 업계 동향, 국내 주요 venue 행사 캘린더, 동종(등록) 업체 
 - [ ] 배포 채널 확정 (사내 메일 / 메신저(Slack·Teams·잔디 등) / 그룹웨어 게시판)
 - [ ] 뉴스레터 이름
 - [ ] 편집 담당자 및 검수자 지정
-- [ ] 자사 시스템 소개서 반영 — **첨부 파일이 저장소에 없어 아직 확인하지 못함.** `newsletter/reference/`에 넣어주면 경쟁사 비교 관점(기능 체크리스트)을 소개서 기준으로 보강 예정
+- [x] 자사 시스템 소개서 반영 → [reference/company-profile.md](reference/company-profile.md) (기능 체크리스트의 ✅/△ 판단은 사내 확인 필요)
 - [ ] 동종 업체(경쟁사) 리스트 확정 — 사내에서 실제로 경쟁하는 업체명 보강 필요

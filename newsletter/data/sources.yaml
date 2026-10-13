@@ -41,9 +41,12 @@ venues:
     priority: 1
     verified: null
 
+  # 자사 지정협력 venue (2023)
+  - { id: setec, name: SETEC, region: 서울 대치, method: crawl, priority: 1, verified: null }
+  - { id: ueco, name: 울산전시컨벤션센터, region: 울산, method: crawl, priority: 1, verified: null }
+
   # --- 확장 후보 ---
   - { id: at_center, name: aT센터, region: 서울 양재, method: crawl, priority: 2, verified: null }
-  - { id: setec, name: SETEC, region: 서울 대치, method: crawl, priority: 2, verified: null }
   - { id: songdo_convensia, name: 송도컨벤시아, region: 인천, method: crawl, priority: 2, verified: null }
   - { id: suwon_cc, name: 수원컨벤션센터, region: 경기 수원, method: crawl, priority: 2, verified: null }
   - { id: dcc, name: 대전컨벤션센터, region: 대전, method: crawl, priority: 2, verified: null }
@@ -86,9 +89,12 @@ competitors:
     - { name: 이벤터스, watch_urls: [], verified: null }
     - { name: 온오프믹스, watch_urls: [], verified: null }
     - { name: 페스타, watch_urls: [], verified: null }
+  partners:   # 자사 연동·협약 파트너 (경쟁이 아닌 파트너 동향으로 다룸)
+    - { name: 티켓링크, relation: API 연동, watch_urls: [], verified: null }
+    - { name: 네이버예약, relation: API 연동, watch_urls: [], verified: null }
+    - { name: NHN Cloud, relation: 안면인식 업무협약, watch_urls: [], verified: null }
   ticketing:
     - { name: 인터파크(NOL) 티켓, watch_urls: [], verified: null }
-    - { name: 티켓링크, watch_urls: [], verified: null }
     - { name: YES24 티켓, watch_urls: [], verified: null }
   global_eventtech:
     - { name: Cvent, watch_urls: [], verified: null }
