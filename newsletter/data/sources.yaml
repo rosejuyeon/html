@@ -9,7 +9,7 @@ venues:
     name: 코엑스
     region: 서울 강남
     url: https://www.coex.co.kr
-    calendar_url: null      # 파일럿 때 일정 페이지 URL 확인 후 기입
+    calendar_url: https://www.coex.co.kr/event/full-schedules/
     method: crawl
     priority: 1
     verified: null
@@ -17,8 +17,8 @@ venues:
   - id: coex_magok
     name: 코엑스마곡
     region: 서울 강서
-    url: null               # 코엑스 사이트 내 메뉴인지 별도 사이트인지 확인 필요
-    calendar_url: null
+    url: https://coexmagok.co.kr
+    calendar_url: https://coexmagok.co.kr/event-schedule/calendar/
     method: crawl
     priority: 1
     verified: null
@@ -27,7 +27,7 @@ venues:
     name: 킨텍스
     region: 경기 고양
     url: https://www.kintex.com
-    calendar_url: null
+    calendar_url: https://www.kintex.com/web/ko/event/clist.do?searchType=11
     method: crawl
     priority: 1
     verified: null
@@ -36,7 +36,7 @@ venues:
     name: 벡스코
     region: 부산
     url: https://www.bexco.co.kr
-    calendar_url: null
+    calendar_url: https://www.bexco.co.kr/kor/CMS/EventScheduleMgr/list.do?mCode=MN214
     method: crawl
     priority: 1
     verified: null
@@ -83,12 +83,18 @@ news:
     - { name: UFI News, method: crawl, lang: en, verified: null }
 
 competitors:
-  # 영업팀 확인 후 보강. watch_urls에는 공지/블로그/릴리스노트 페이지를 넣는다.
-  domestic_registration: []   # 국내 등록·출입관리 대행 업체 (사내 리스트로 채움)
-  domestic_platform:
+  # watch_urls에는 공지/블로그/릴리스노트 페이지를 넣는다.
+  benchmark:   # 자사 목표치 — 매 호 필수 ("Cvent 워치")
+    - { name: Cvent, region: global, watch_urls: [], verified: null }
+  domestic:    # 국내 직접 경쟁사 (2026-10-13 확정 리스트)
     - { name: 이벤터스, watch_urls: [], verified: null }
     - { name: 온오프믹스, watch_urls: [], verified: null }
-    - { name: 페스타, watch_urls: [], verified: null }
+    - { name: 시스포유, watch_urls: [], verified: null }
+    - { name: 서진인포텍, watch_urls: [], verified: null }
+    - { name: CM, note: 정식 회사명 확인 필요, watch_urls: [], verified: null }
+    - { name: 플립패스, watch_urls: [], verified: null }
+    - { name: 블루오리진, watch_urls: [], verified: null }
+    - { name: 이벤트플랜트, watch_urls: [], verified: null }
   partners:   # 자사 연동·협약 파트너 (경쟁이 아닌 파트너 동향으로 다룸)
     - { name: 티켓링크, relation: API 연동, watch_urls: [], verified: null }
     - { name: 네이버예약, relation: API 연동, watch_urls: [], verified: null }
@@ -97,7 +103,6 @@ competitors:
     - { name: 인터파크(NOL) 티켓, watch_urls: [], verified: null }
     - { name: YES24 티켓, watch_urls: [], verified: null }
   global_eventtech:
-    - { name: Cvent, watch_urls: [], verified: null }
     - { name: Swapcard, watch_urls: [], verified: null }
     - { name: Bizzabo, watch_urls: [], verified: null }
     - { name: EventsAir, watch_urls: [], verified: null }

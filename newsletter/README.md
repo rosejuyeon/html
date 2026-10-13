@@ -32,8 +32,11 @@ MICE 업계 동향, 국내 주요 venue 행사 캘린더, 동종(등록) 업체 
 
 ## 미결 사항 (Open Questions)
 - [ ] 발행 주기 확정 (권장안: 월간 본편 + 격주/주간 "행사 캘린더 단신" — [01-planning.md](01-planning.md#3-발행-주기) 참고)
-- [ ] 배포 채널 확정 (사내 메일 / 메신저(Slack·Teams·잔디 등) / 그룹웨어 게시판)
+- [ ] 배포 채널 확정 — 사내 전체 메일 vs Teams 검토 중 ([03-distribution-plan.md](03-distribution-plan.md#1-배포-채널) 비교표)
 - [ ] 뉴스레터 이름
 - [ ] 편집 담당자 및 검수자 지정
 - [x] 자사 시스템 소개서 반영 → [reference/company-profile.md](reference/company-profile.md) (기능 체크리스트의 ✅/△ 판단은 사내 확인 필요)
-- [ ] 동종 업체(경쟁사) 리스트 확정 — 사내에서 실제로 경쟁하는 업체명 보강 필요
+- [x] 동종 업체 리스트 확정 — 국내 8곳 + 벤치마크 Cvent ([02-sources.md](02-sources.md#c-동종-업계-레이더-섹션-4))
+- [ ] 경쟁사별 공식 사이트 URL, "CM" 정식 회사명
+- [x] venue 일정 페이지 URL 4곳 (코엑스·코엑스마곡·킨텍스·벡스코) — SETEC·UECO 등 추가 예정
+- [ ] venue 페이지 형태 확인 (HTML 목록 / JS 캘린더) — 파일럿 때
