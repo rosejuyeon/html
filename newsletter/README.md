@@ -32,7 +32,8 @@ MICE 업계 동향, 국내 주요 venue 행사 캘린더, 동종(등록) 업체 
 
 ## 미결 사항 (Open Questions)
 - [ ] 발행 주기 확정 (권장안: 월간 본편 + 격주/주간 "행사 캘린더 단신" — [01-planning.md](01-planning.md#3-발행-주기) 참고)
-- [ ] 배포 채널 확정 — 사내 전체 메일 vs Teams 검토 중 ([03-distribution-plan.md](03-distribution-plan.md#1-배포-채널) 비교표)
+- [x] 배포 채널: **Teams** 확정 ([03-distribution-plan.md](03-distribution-plan.md#1-배포-채널))
+- [ ] Teams 게시 채널 지정, Workflows 사용 권한 확인 (IT 관리자)
 - [ ] 뉴스레터 이름
 - [ ] 편집 담당자 및 검수자 지정
 - [x] 자사 시스템 소개서 반영 → [reference/company-profile.md](reference/company-profile.md) (기능 체크리스트의 ✅/△ 판단은 사내 확인 필요)
