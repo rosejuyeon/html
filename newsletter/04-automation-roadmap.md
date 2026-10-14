@@ -29,8 +29,8 @@ Git 프로젝트 생성 시점. 우선순위는 **반복적이고 규칙적인 �
 
 | 순서 | 작업 | 방법 | 이유 |
 |---|---|---|---|
-| 1 | Venue 캘린더 수집 | venue별 수집기 (Python: requests/BeautifulSoup, JS 렌더링 페이지는 Playwright) → `data/events/YYYY-MM.json` | 가장 기계적이고 시간이 많이 드는 작업 |
-| 2 | 캘린더 표 자동 생성 | JSON → 마크다운 표 변환 스크립트 | 섹션 3 완전 자동화, 주간 단신 가능해짐 |
+| 1 ✅ | Venue 캘린더 수집 (2026-10 선행 구현: [collect_venues.py](scripts/collect_venues.py), 5곳) | venue별 수집기 (Python: requests/BeautifulSoup, JS 렌더링 페이지는 Playwright) → `data/events/YYYY-MM.json` | 가장 기계적이고 시간이 많이 드는 작업 |
+| 2 ✅ | 캘린더 표 자동 생성 (같은 스크립트가 `.md` 출력) | JSON → 마크다운 표 변환 스크립트 | 섹션 3 완전 자동화, 주간 단신 가능해짐 |
 | 3 | 뉴스 후보 수집 | 키워드 기반 뉴스 검색/RSS → 후보 리스트 (제목·링크·날짜) | 사람이 고르기만 하면 됨 |
 | 4 | 동종 업체 변경 감지 | 지정 페이지(공지/블로그/릴리스노트) 주기적 스냅샷 후 변경 시 알림 | 놓치는 소식 방지 |
 

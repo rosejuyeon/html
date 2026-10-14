@@ -115,11 +115,11 @@ competitors:
     - { name: 이벤트플랜트, company: (주)이벤트플랜트, url: https://www.eventplant.co.kr, watch_urls: [], verified: 2026-10-14 }
     - { name: 이벤터스, url: https://event-us.kr, watch_urls: [], verified: 2026-10-14 }
     - { name: 온오프믹스, url: https://www.onoffmix.com, watch_urls: [], verified: 2026-10-14 }
-    - { name: 플립패스, company: 씨앤피파트너스, url: null, watch_urls: [], verified: null }
-    - { name: 페어패스, company: 블루오리진, url: null, watch_urls: [], verified: null }
-    - { name: 시스포유, url: null, watch_urls: [], verified: null }
-    - { name: 서진인포텍, url: null, watch_urls: [], verified: null }
-    - { name: 콩콩프렌즈, url: null, watch_urls: [], verified: null }
+    - { name: 플립패스, company: 씨앤피파트너스, url: https://cnpartners.kr, watch_urls: [], verified: 2026-10-14 }
+    - { name: 페어패스, company: 블루오리진, url: https://www.fairpass.world, watch_urls: [], verified: 2026-10-14 }
+    - { name: 시스포유, url: https://www.sysforu.co.kr, watch_urls: [], verified: 2026-10-14 }
+    - { name: 서진인포텍, url: https://www.sjinfotec.com, watch_urls: [], verified: 2026-10-14 }
+    - { name: 콩콩프렌즈, url: https://www.congkong.net, watch_urls: [], verified: 2026-10-14 }
   partners:   # 자사 연동·협약 파트너 (경쟁이 아닌 파트너 동향으로 다룸)
     - { name: 티켓링크, relation: API 연동, watch_urls: [], verified: null }
     - { name: 네이버예약, relation: API 연동, watch_urls: [], verified: null }

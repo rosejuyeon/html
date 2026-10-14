@@ -20,15 +20,24 @@ MICE 업계 동향, 국내 주요 venue 행사 캘린더, 동종(등록) 업체 
 | [templates/newsletter-template.md](templates/newsletter-template.md) | 매 호 작성용 템플릿 |
 | [data/sources.yaml](data/sources.yaml) | 자동화 대비 소스 목록(기계가 읽을 수 있는 형태) |
 | [reference/company-profile.md](reference/company-profile.md) | 자사(고벤트) 프로필 요약 + 경쟁사 비교용 기능 체크리스트 |
-| `issues/` | 발행 호별 원고 (`YYYY-MM.md` 또는 `YYYY-Www.md`) |
+| [scripts/collect_venues.py](scripts/collect_venues.py) | venue 행사 일정 수집기 → `data/events/YYYY-MM.json`, `.md` |
+| [data/our-events.txt](data/our-events.txt) | 자사 수행 이력 행사 키워드 (캘린더 ⭐ 표시용) |
+| `issues/` | 발행 호별 원고 (`YYYY-MM.md` 또는 `YYYY-Www.md`) — [2026-11 파일럿 초안](issues/2026-11.md) |
 
 ## 진행 단계 (요약)
-- **Phase 0 — 기획 (현재)**: 문서 확정, 소스 검증, 파일럿 1호 수동 제작
+- **Phase 0 — 기획 (현재)**: 문서 확정, 소스 검증, 파일럿 1호 제작 → [11월호 초안](issues/2026-11.md) 작성 완료, venue 캘린더 수집기는 먼저 만듦
 - **Phase 1 — 수동 운영**: 템플릿 기반으로 2~3회 발행, 피드백 수집, 주기 확정
 - **Phase 2 — 반자동**: venue 캘린더·뉴스 수집 스크립트 + AI 요약 초안 → 사람이 검수 후 발송
 - **Phase 3 — 자동화**: 예약 실행(GitHub Actions 등)으로 초안 생성·검수 요청·발송까지 파이프라인화
 
 자세한 내용은 [04-automation-roadmap.md](04-automation-roadmap.md) 참고.
+
+### venue 캘린더 수집
+```bash
+pip install -r scripts/requirements.txt
+python scripts/collect_venues.py 2026-11      # → data/events/2026-11.json, 2026-11.md
+```
+수집한 표(`data/events/YYYY-MM.md`)를 그 달 원고의 섹션 3에 붙여 넣는다.
 
 ## 미결 사항 (Open Questions)
 - [ ] 발행 주기 확정 (권장안: 월간 본편 + 격주/주간 "행사 캘린더 단신" — [01-planning.md](01-planning.md#3-발행-주기) 참고)
@@ -38,7 +47,7 @@ MICE 업계 동향, 국내 주요 venue 행사 캘린더, 동종(등록) 업체 
 - [ ] 편집 담당자 및 검수자 지정
 - [x] 자사 시스템 소개서 반영 → [reference/company-profile.md](reference/company-profile.md) (기능 체크리스트의 ✅/△ 판단은 사내 확인 필요)
 - [x] 동종 업체 리스트 확정 — 국내 8곳 + 벤치마크 Cvent ([02-sources.md](02-sources.md#c-동종-업계-레이더-섹션-4))
-- [ ] 경쟁사 공식 사이트: 플립패스·페어패스·시스포유·서진인포텍·콩콩프렌즈
+- [x] 경쟁사 공식 사이트 8곳 확인 (서진인포텍은 내부 페이지 주소 필요)
 - [x] venue 일정 페이지: 코엑스·코엑스마곡·킨텍스·벡스코·SETEC
 - [ ] 양재 aT센터 일정 페이지 주소
 - [x] venue 페이지 형태 확인 — 4곳 모두 수집 가능 (킨텍스는 JSON API) ([02-sources.md](02-sources.md#수집-메모-2026-10-14-확인))
