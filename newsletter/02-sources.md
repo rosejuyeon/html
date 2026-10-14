@@ -8,14 +8,18 @@
 ### 1순위 — 요청한 4곳 + 자사 지정협력 venue
 | Venue | 지역 | 행사 일정 페이지 | 수집 방식 (예상) | 검증일 |
 |---|---|---|---|---|
-| 코엑스 (COEX) | 서울 강남 | https://www.coex.co.kr/event/full-schedules/ | 웹페이지 크롤링 | |
-| 코엑스마곡 (COEX Magok) | 서울 강서 | https://coexmagok.co.kr/event-schedule/calendar/ | 웹페이지 크롤링 (캘린더형) | |
-| 킨텍스 (KINTEX) | 경기 고양 | https://www.kintex.com/web/ko/event/clist.do?searchType=11 | 웹페이지 크롤링 (목록형) | |
-| 벡스코 (BEXCO) | 부산 | https://www.bexco.co.kr/kor/CMS/EventScheduleMgr/list.do?mCode=MN214 | 웹페이지 크롤링 (목록형) | |
+| 코엑스 (COEX) | 서울 강남 | https://www.coex.co.kr/event/full-schedules/ | HTML 목록 (분류·행사명·기간·홀) | 2026-10-14 |
+| 코엑스마곡 (COEX Magok) | 서울 강서 | https://coexmagok.co.kr/event-schedule/calendar/ | HTML 월 달력 (날짜별 행사명). 목록형 `/event-schedule/list/`도 있음 | 2026-10-14 |
+| 킨텍스 (KINTEX) | 경기 고양 | https://www.kintex.com/web/ko/event/clist.do?searchType=11 | **JSON API** (아래 참고). 페이지 자체는 JS로 그려져 HTML에 일정 없음 | 2026-10-14 |
+| 벡스코 (BEXCO) | 부산 | https://www.bexco.co.kr/kor/CMS/EventScheduleMgr/list.do?mCode=MN214 | HTML 목록 (분류·행사명·기간·장소). 엑셀 다운로드 `listExcel.do`도 있음 | 2026-10-14 |
 | SETEC | 서울 대치 | (추가 예정) | 웹페이지 크롤링 | |
 | 울산전시컨벤션센터 (UECO) | 울산 | (추가 예정) | 웹페이지 크롤링 | |
 
-> 위 4개 URL은 담당자가 제공한 링크(2026-10-13). 현재 작업 환경의 네트워크 정책상 접속 확인은 못 했으므로, 파일럿 때 열어보고 **페이지가 HTML 목록인지 / JS로 그려지는 캘린더인지**를 기록한다 (자동화 시 수집 방식이 달라짐).
+#### 수집 메모 (2026-10-14 확인)
+- **코엑스**: 브라우저가 아닌 요청은 서버가 403으로 막는다 → 수집기에서 **브라우저 User-Agent 헤더 필수**. 페이지 안내문대로 주최자 요청에 따라 일부 행사는 노출되지 않는다.
+- **킨텍스**: `https://www.kintex.com/web/ko/event/calendarEventList.do?yearMonth=YYYYMM&searchType=11` 이 월별 JSON을 준다. 다만 **날짜별로 묶인 형태**(예: 11/4 "전시회(4)" + 행사명 목록)라 행사별 시작·종료일은 연속된 날짜를 합쳐 계산해야 하고, **홀 정보는 없다**.
+- **코엑스마곡**: 달력형이라 날짜별 행사명만 보임 → 기간은 날짜를 합쳐 계산. 목록형 페이지에 홀·분야가 있는지 다음에 확인.
+- **벡스코**: 목록에 회의실 단위 소규모 회의까지 모두 나온다 → 분류 필터("전시회")나 규모 기준으로 걸러야 뉴스레터에 쓸 만하다.
 
 > 코엑스(연간 계약)·SETEC·벡스코·UECO는 자사가 2023년 지정협력업체로 등록된 venue라 1순위에 포함했다.
 

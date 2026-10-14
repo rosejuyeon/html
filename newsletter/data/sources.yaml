@@ -11,8 +11,10 @@ venues:
     url: https://www.coex.co.kr
     calendar_url: https://www.coex.co.kr/event/full-schedules/
     method: crawl
+    format: html_list
+    note: 브라우저 User-Agent 없으면 403
     priority: 1
-    verified: null
+    verified: 2026-10-14
 
   - id: coex_magok
     name: 코엑스마곡
@@ -20,17 +22,22 @@ venues:
     url: https://coexmagok.co.kr
     calendar_url: https://coexmagok.co.kr/event-schedule/calendar/
     method: crawl
+    format: html_calendar
+    note: 목록형 /event-schedule/list/ 도 있음
     priority: 1
-    verified: null
+    verified: 2026-10-14
 
   - id: kintex
     name: 킨텍스
     region: 경기 고양
     url: https://www.kintex.com
     calendar_url: https://www.kintex.com/web/ko/event/clist.do?searchType=11
-    method: crawl
+    api_url: https://www.kintex.com/web/ko/event/calendarEventList.do?yearMonth={YYYYMM}&searchType=11
+    method: api
+    format: json_daily
+    note: 날짜별로 묶인 JSON, 홀 정보 없음
     priority: 1
-    verified: null
+    verified: 2026-10-14
 
   - id: bexco
     name: 벡스코
@@ -38,8 +45,10 @@ venues:
     url: https://www.bexco.co.kr
     calendar_url: https://www.bexco.co.kr/kor/CMS/EventScheduleMgr/list.do?mCode=MN214
     method: crawl
+    format: html_list
+    note: 소규모 회의 다수 포함 → 분류 필터 필요, listExcel.do 엑셀 다운로드 있음
     priority: 1
-    verified: null
+    verified: 2026-10-14
 
   # 자사 지정협력 venue (2023)
   - { id: setec, name: SETEC, region: 서울 대치, method: crawl, priority: 1, verified: null }
