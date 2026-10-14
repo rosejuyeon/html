@@ -38,6 +38,7 @@ MICE 업계 동향, 국내 주요 venue 행사 캘린더, 동종(등록) 업체 
 - [ ] 편집 담당자 및 검수자 지정
 - [x] 자사 시스템 소개서 반영 → [reference/company-profile.md](reference/company-profile.md) (기능 체크리스트의 ✅/△ 판단은 사내 확인 필요)
 - [x] 동종 업체 리스트 확정 — 국내 8곳 + 벤치마크 Cvent ([02-sources.md](02-sources.md#c-동종-업계-레이더-섹션-4))
-- [ ] 경쟁사별 공식 사이트 URL, "CM" 정식 회사명
-- [x] venue 일정 페이지 URL 4곳 (코엑스·코엑스마곡·킨텍스·벡스코) — SETEC·UECO 등 추가 예정
+- [ ] 경쟁사 공식 사이트: 플립패스·페어패스·시스포유·서진인포텍·콩콩프렌즈
+- [x] venue 일정 페이지: 코엑스·코엑스마곡·킨텍스·벡스코·SETEC
+- [ ] 양재 aT센터 일정 페이지 주소
 - [x] venue 페이지 형태 확인 — 4곳 모두 수집 가능 (킨텍스는 JSON API) ([02-sources.md](02-sources.md#수집-메모-2026-10-14-확인))
