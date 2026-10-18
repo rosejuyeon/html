@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>리더기 관리</title>
+  <meta name="theme-color" content="#25255e">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    :root {
+      --navy: #25255e;
+      --ink: #1d1d26;
+      --muted: #6b6f7b;
+      --line: #e4e6ec;
+      --soft: #f5f6f9;
+      --blue: #2c53d6;
+      --blue-soft: #e7ecfc;
+      --green: #1a7a4c;
+      --green-soft: #e1f3e9;
+      --gray-soft: #f0f0f3;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: #fff;
+      color: var(--ink);
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 0 20px 40px; }
+    header { padding: 28px 0 8px; padding-top: calc(28px + env(safe-area-inset-top)); }
+    header h1 { font-size: 24px; font-weight: 800; letter-spacing: -.03em; }
+    header p { margin-top: 6px; font-size: 14px; color: var(--muted); }
+
+    h2 { margin: 26px 0 10px; font-size: 14px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+    h2::before { content: ""; width: 4px; height: 14px; border-radius: 2px; background: var(--navy); }
+
+    .list { display: grid; gap: 10px; }
+    .item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 18px; border: 1.5px solid var(--line); border-radius: 14px;
+      text-decoration: none; color: inherit;
+      transition: border-color .12s ease, transform .12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .item:hover { border-color: var(--navy); }
+    .item:active { transform: scale(.99); }
+    .item:focus-visible { outline: 3px solid #ffb400; outline-offset: 2px; }
+    .item .body { flex: 1; min-width: 0; }
+    .item .name, .item .meta { display: block; }
+    .item .name { font-size: 17px; font-weight: 700; letter-spacing: -.02em; }
+    .item .meta { margin-top: 2px; font-size: 13px; color: var(--muted); }
+    .item .arrow { font-size: 26px; font-weight: 300; color: var(--muted); line-height: 1; }
+    .badge { flex: none; padding: 4px 9px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .b-live { background: var(--blue-soft); color: var(--blue); }
+    .b-sample { background: var(--green-soft); color: var(--green); }
+    .b-done { background: var(--gray-soft); color: var(--muted); }
+
+    .note {
+      margin-top: 28px; padding: 14px 16px; border-radius: 12px; background: var(--soft);
+      font-size: 13px; color: var(--muted); line-height: 1.7;
+    }
+    .note b { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>리더기 관리</h1>
+      <p>행사별 리더기 배포·반납·교체·점검 기록 페이지</p>
+    </header>
+
+    <h2>진행 예정</h2>
+    <div class="list">
+      <a class="item" href="https://claude.ai/artifact/3JujkC24yZiZGixdrvJMop" target="_blank" rel="noopener">
+        <span class="badge b-live">10.21–23</span>
+        <span class="body"><span class="name">AMXPO 2026</span><span class="meta">킨텍스</span></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+      <a class="item" href="https://claude.ai/artifact/8E36NGt2EnsDststjbsRuo" target="_blank" rel="noopener">
+        <span class="badge b-live">10.21–23</span>
+        <span class="body"><span class="name">산업AI EXPO 2026</span><span class="meta">킨텍스</span></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+    </div>
+
+    <h2>연습용</h2>
+    <div class="list">
+      <a class="item" href="https://claude.ai/artifact/QZ7CBKCjkNsUDPPUGuU6By" target="_blank" rel="noopener">
+        <span class="badge b-sample">샘플</span>
+        <span class="body"><span class="name">리더기 관리 샘플</span><span class="meta">스태프 교육용 · 예시 데이터</span></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+    </div>
+
+    <h2>종료된 행사</h2>
+    <div class="list">
+      <a class="item" href="https://claude.ai/artifact/F8YjJWm8TuV9AJEgdq9sXZ" target="_blank" rel="noopener">
+        <span class="badge b-done">8.19–21</span>
+        <span class="body"><span class="name">AISE 2026</span><span class="meta">업체 64곳 · 리더기 101대</span></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+    </div>
+
+    <p class="note">
+      각 페이지는 <b>공유받은 계정으로 claude.ai에 로그인</b>해야 열립니다.<br>
+      열리지 않으면 담당자에게 공유를 요청해 주세요.
+    </p>
+  </div>
+</body>
+</html>
