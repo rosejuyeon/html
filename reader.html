@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>리더기 관리</title>
+<meta name="theme-color" content="#2c53d6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: sticky top bar → event header → tabs (현황 / 업체·리더기 / 설정); edits open in a side drawer. */
+  :root {
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface-2: #eef1f6;
+    --line: #dce1e9;
+    --ink: #151b27;
+    --muted: #5c6677;
+    --accent: #2c53d6;
+    --accent-ink: #ffffff;
+    --accent-soft: #e7ecfc;
+    --ok: #1a7a4c;   --ok-soft: #e1f3e9;
+    --warn: #9a5800; --warn-soft: #fcefd6;
+    --bad: #bf3329;  --bad-soft: #fbe5e2;
+    --tag: #fffbe8;  --tag-line: #e3d79a; --tag-ink: #3d3712;
+    --shadow: 0 1px 2px rgba(20, 30, 50, .06), 0 8px 24px rgba(20, 30, 50, .06);
+    --font: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    --r: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e121a; --surface: #161b25; --surface-2: #1d2430; --line: #2a3242;
+      --ink: #e6eaf2; --muted: #98a2b4; --accent: #7d9cff; --accent-ink: #0e121a; --accent-soft: #1d2742;
+      --ok: #5fd096; --ok-soft: #14301f; --warn: #f2b45b; --warn-soft: #33260e; --bad: #ff8b80; --bad-soft: #3a1917;
+      --tag: #2a2714; --tag-line: #5a5328; --tag-ink: #f1e8b8;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e121a; --surface: #161b25; --surface-2: #1d2430; --line: #2a3242;
+    --ink: #e6eaf2; --muted: #98a2b4; --accent: #7d9cff; --accent-ink: #0e121a; --accent-soft: #1d2742;
+    --ok: #5fd096; --ok-soft: #14301f; --warn: #f2b45b; --warn-soft: #33260e; --bad: #ff8b80; --bad-soft: #3a1917;
+    --tag: #2a2714; --tag-line: #5a5328; --tag-ink: #f1e8b8;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font); font-size: 14px; line-height: 1.5;
+    word-break: keep-all; overflow-wrap: anywhere;
+  }
+  body.locked { overflow: hidden; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: var(--mono); }
+  .wrap {
+    max-width: 1180px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* top bar */
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+  .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; gap: 12px; padding-block: 10px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 15px; letter-spacing: -.01em; margin-right: auto; background: none; border: 0; padding: 0; cursor: pointer; }
+  .brand svg { width: 22px; height: 22px; color: var(--accent); }
+  .top select { min-width: 0; max-width: 240px; height: 36px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 36px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--surface); font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .btn:hover { background: var(--surface-2); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.primary:hover { filter: brightness(1.06); background: var(--accent); }
+  .btn.danger { color: var(--bad); border-color: var(--bad); background: transparent; }
+  .btn.danger.armed { background: var(--bad); color: var(--surface); }
+  .btn.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn svg { width: 16px; height: 16px; }
+
+  main { padding-block: 22px 60px; }
+
+  /* home */
+  .home-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  h1 { font-size: 22px; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
+  .sub { color: var(--muted); margin: 2px 0 0; }
+  .events { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .ev-card {
+    text-align: left; display: grid; gap: 10px; padding: 16px; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  }
+  .ev-card:hover { border-color: var(--accent); }
+  .ev-card h3 { margin: 0; font-size: 17px; letter-spacing: -.02em; }
+  .ev-meta { color: var(--muted); font-size: 13px; }
+  .ev-stats { display: flex; gap: 16px; font-size: 13px; color: var(--muted); }
+  .ev-stats b { color: var(--ink); font-size: 15px; }
+  .empty {
+    padding: 48px 20px; text-align: center; color: var(--muted);
+    background: var(--surface); border: 1px dashed var(--line); border-radius: var(--r);
+  }
+  .empty h3 { margin: 0 0 6px; color: var(--ink); font-size: 16px; }
+  .empty .btn { margin-top: 14px; }
+
+  /* event header + tabs */
+  .ev-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .ev-head .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin-bottom: 18px; overflow-x: auto; scrollbar-width: none; }
+  .tab { padding: 10px 14px; border: 0; background: none; color: var(--muted); font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .tab .count { color: var(--muted); font-weight: 500; margin-left: 4px; }
+
+  /* summary */
+  .kpis { display: grid; grid-template-columns: 1.3fr repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; min-width: 0; }
+  .kpi .label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .02em; }
+  .kpi .value { font-size: 28px; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .kpi .value small { font-size: 14px; font-weight: 500; color: var(--muted); margin-left: 3px; }
+  .kpi .foot { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kpi.main { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .kpi.main .label, .kpi.main .foot, .kpi.main .value small { color: inherit; opacity: .85; }
+  .kpi.low { background: var(--bad-soft); border-color: var(--bad); }
+  .kpi.low .label, .kpi.low .value { color: var(--bad); }
+  .bar { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; margin-top: 8px; }
+  .bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+  .bar.ok i { background: var(--ok); }
+
+  .minis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 18px; }
+  .mini { padding: 12px 16px; border-left: 1px solid var(--line); min-width: 0; }
+  .mini:first-child { border-left: 0; }
+  .mini .label { font-size: 12px; color: var(--muted); }
+  .mini .value { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .mini .value small { font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 3px; }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+  .panel h2 { font-size: 14px; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .panel h2 span { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .panel.full { grid-column: 1 / -1; }
+  table.plain { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  table.plain th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  table.plain td { padding: 8px; border-bottom: 1px solid var(--line); }
+  table.plain tr:last-child td { border-bottom: 0; }
+  table.plain .r { text-align: right; }
+  .hbars { display: grid; gap: 10px; }
+  .hbar { display: grid; grid-template-columns: 64px 1fr 72px; align-items: center; gap: 10px; font-variant-numeric: tabular-nums; }
+  .hbar .track { height: 18px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .hbar .track i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+  .hbar .v { text-align: right; font-weight: 600; }
+  .hbar .k { color: var(--muted); font-size: 13px; }
+  .note-text { white-space: pre-wrap; margin: 0; font-size: 13px; line-height: 1.7; color: var(--ink); }
+  .hint { color: var(--muted); font-size: 12px; margin: 10px 0 0; }
+
+  /* list */
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  .search { flex: 1 1 240px; min-width: 0; position: relative; }
+  .search input { width: 100%; height: 38px; padding: 0 12px 0 36px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--muted); }
+  .toolbar select { height: 38px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .chip { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .chip .n { color: var(--muted); font-weight: 500; margin-left: 4px; }
+  .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+  .chip[aria-pressed="true"] .n { color: inherit; opacity: .7; }
+
+  .list { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .lrow, .lhead {
+    display: grid; align-items: center; gap: 12px;
+    grid-template-columns: 70px minmax(150px, 1.6fr) 70px 92px minmax(140px, 1.4fr) 70px 90px 92px;
+    padding: 10px 14px; border-bottom: 1px solid var(--line);
+  }
+  .lhead { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--surface-2); padding-block: 8px; }
+  .lrow { cursor: pointer; text-align: left; width: 100%; border-left: 0; border-right: 0; border-top: 0; background: none; }
+  .lrow:hover { background: var(--surface-2); }
+  .lrow:last-child { border-bottom: 0; }
+  .lrow > * { min-width: 0; }
+  .booth { font-family: var(--mono); font-weight: 600; font-size: 13px; }
+  .co { font-weight: 600; }
+  .who { color: var(--muted); font-size: 12px; }
+  .qty { font-variant-numeric: tabular-nums; }
+  .qty small { color: var(--muted); display: block; font-size: 11px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag {
+    font-family: var(--mono); font-size: 12px; font-weight: 600; line-height: 1;
+    padding: 4px 6px 3px; border-radius: 4px; background: var(--tag); color: var(--tag-ink); border: 1px solid var(--tag-line);
+  }
+  .tag.swap { background: transparent; border-style: dashed; color: var(--warn); border-color: var(--warn); }
+  .tag.swap::before { content: "교체 전 "; font-family: var(--font); font-weight: 600; font-size: 11px; }
+  .data-line { font-size: 12px; color: var(--muted); margin-top: -4px; }
+  .data-line b { color: var(--ink); }
+  .tag.dup { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+  .s-wait { background: var(--warn-soft); color: var(--warn); }
+  .s-use { background: var(--accent-soft); color: var(--accent); }
+  .s-part { background: var(--warn-soft); color: var(--warn); }
+  .s-done { background: var(--ok-soft); color: var(--ok); }
+  .s-none { background: var(--surface-2); color: var(--muted); }
+  .muted { color: var(--muted); }
+  .warn-ico { color: var(--warn); font-weight: 700; }
+
+  /* settings */
+  .form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; align-items: start; }
+  .field { display: grid; gap: 5px; min-width: 0; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .field input, .field select, .field textarea {
+    width: 100%; min-height: 38px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface);
+  }
+  .field textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+  .field input:disabled, .field textarea:disabled, .field select:disabled { background: var(--surface-2); }
+  .field .help { font-size: 12px; color: var(--muted); }
+  .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+  .danger-zone { margin-top: 18px; border-color: var(--bad); }
+  .danger-zone p { margin: 0 0 12px; color: var(--muted); }
+  .err { color: var(--bad); font-size: 13px; font-weight: 600; }
+
+  /* drawer + modal */
+  .scrim { position: fixed; inset: 0; background: rgba(10, 14, 22, .45); z-index: 20; }
+  .drawer {
+    position: fixed; z-index: 21; top: 0; right: 0; bottom: 0; width: min(520px, 100%);
+    background: var(--surface); box-shadow: var(--shadow); display: flex; flex-direction: column;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px);
+  }
+  .drawer header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  .drawer header h2 { margin: 0; font-size: 16px; }
+  .drawer .body { flex: 1; overflow-y: auto; padding: 16px 18px 24px; display: grid; gap: 18px; align-content: start; }
+  .drawer footer { display: flex; gap: 8px; align-items: center; padding: 12px 18px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .drawer footer .spacer { flex: 1; }
+  .section-title { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: .04em; margin: 0 0 -6px; }
+  .scan-grid { overflow-x: auto; }
+  .scan-grid table { border-collapse: collapse; width: 100%; }
+  .scan-grid th { font-size: 12px; color: var(--muted); font-weight: 600; text-align: left; padding: 4px 6px; }
+  .scan-grid td { padding: 3px 4px; }
+  .scan-grid input { width: 100%; min-width: 64px; height: 34px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); font-variant-numeric: tabular-nums; }
+  .scan-grid .raw { font-size: 12px; color: var(--warn); margin-top: 6px; }
+  .inline { display: flex; gap: 8px; align-items: end; }
+  .inline .field { flex: 1; }
+  .modal {
+    position: fixed; z-index: 21; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: min(640px, calc(100% - 32px)); max-height: calc(100% - 48px); overflow-y: auto;
+    background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 20px;
+  }
+  .modal h2 { margin: 0 0 4px; font-size: 17px; }
+  .modal textarea { width: 100%; min-height: 160px; font-family: var(--mono); font-size: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+  .preview { max-height: 220px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; margin-top: 10px; }
+  .preview table { border-collapse: collapse; font-size: 12px; width: 100%; }
+  .preview th, .preview td { padding: 5px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; text-align: left; }
+  .toast {
+    position: fixed; z-index: 30; left: 50%; transform: translateX(-50%);
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    background: var(--ink); color: var(--surface); padding: 10px 16px; border-radius: 8px; font-weight: 600; box-shadow: var(--shadow);
+    max-width: calc(100% - 32px);
+  }
+  .banner { padding: 10px 14px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); font-weight: 600; margin-bottom: 14px; }
+
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .minis { grid-template-columns: repeat(3, 1fr); }
+    .mini:nth-child(4) { border-left: 0; }
+    .mini:nth-child(n+4) { border-top: 1px solid var(--line); }
+    .cols { grid-template-columns: 1fr; }
+    .lhead { display: none; }
+    .lrow { grid-template-columns: 64px 1fr auto; grid-template-areas: "b c s" "b q q" "b t t"; row-gap: 6px; align-items: start; }
+    .lrow .c-booth { grid-area: b; }
+    .lrow .c-co { grid-area: c; }
+    .lrow .c-status { grid-area: s; justify-self: end; }
+    .lrow .c-staff, .lrow .c-qty, .lrow .c-ret, .lrow .c-scan { display: none; }
+    .lrow .c-meta { grid-area: q; display: block !important; font-size: 12px; color: var(--muted); }
+    .lrow .c-tags { grid-area: t; }
+  }
+  @media (max-width: 560px) {
+    .form { grid-template-columns: 1fr; }
+    .minis { grid-template-columns: repeat(2, 1fr); }
+    .mini:nth-child(n) { border-left: 1px solid var(--line); border-top: 0; }
+    .mini:nth-child(odd) { border-left: 0; }
+    .mini:nth-child(n+3) { border-top: 1px solid var(--line); }
+    .kpi .value { font-size: 24px; }
+    .top select { max-width: 150px; }
+    .top .wrap { flex-wrap: nowrap; }
+    .brand-text { display: none; }
+  }
+  .c-meta { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .drawer { animation: slide .18s ease-out; }
+    @keyframes slide { from { transform: translateX(24px); opacity: .6; } }
+  }
+</style>
+<style>
+  .admin-pill { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: var(--warn-soft); color: var(--warn); }
+  .gate { max-width: 460px; }
+  .gate h2 { margin-bottom: 6px; }
+  .gate .sub { margin-bottom: 14px; }
+  .gate-form { display: flex; gap: 8px; }
+  .gate-form input { flex: 1; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 16px; }
+  .gate .err { margin-top: 8px; min-height: 1em; }
+  .plan-tools { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .plan-tools .spacer { flex: 1; }
+  .plan-tools .btn[aria-label] { width: 38px; padding: 0; font-size: 18px; }
+  .zoom-label { min-width: 48px; text-align: center; font-weight: 600; color: var(--muted); }
+  .plan-stage {
+    height: min(72vh, 760px); overflow: auto; border: 1px solid var(--line); border-radius: var(--r);
+    background: var(--surface-2); cursor: grab; -webkit-overflow-scrolling: touch; touch-action: auto;
+  }
+  .plan-stage.dragging { cursor: grabbing; }
+  .plan-img { display: block; max-width: none; height: auto; user-select: none; -webkit-user-drag: none; }
+  .plan-loading { padding: 60px 20px; text-align: center; color: var(--muted); }
+  .data-line { font-size: 12px; color: var(--muted); margin-top: -4px; }
+  .data-line b { color: var(--ink); }
+  .tag.swap { background: transparent; border-style: dashed; color: var(--warn); border-color: var(--warn); text-decoration: none; }
+  .tag.swap::before { content: "교체 전 "; font-family: var(--font); font-weight: 600; font-size: 11px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <button class="brand" id="brand" type="button" aria-label="행사 목록으로">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M9 6h6"/><path d="M9 10h6"/><circle cx="12" cy="16" r="2"/></svg>
+      <span class="brand-text">리더기 배포 관리</span>
+    </button>
+    <span class="admin-pill" id="adminPill" hidden>관리자</span>
+    <button class="btn ghost" id="adminBtn" type="button">관리자</button>
+    <button class="btn primary" id="newEventBtn" type="button" hidden>새 행사</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="banner" class="banner" hidden></div>
+
+  <section id="home">
+    <div class="home-head">
+      <div>
+        <h1>행사별 리더기 현황</h1>
+        <p class="sub">행사를 고르고 현장 비밀번호를 입력하면 업체별 리더기 배포·반납·점검 기록을 보고 입력할 수 있습니다.</p>
+      </div>
+      <button class="btn" id="importBtn" type="button" hidden>백업 가져오기</button>
+    </div>
+    <div id="eventList" class="events"></div>
+    <div id="homeEmpty" class="empty">
+      <h3>행사 목록을 불러오는 중입니다</h3>
+      <p>잠시만 기다려 주세요.</p>
+    </div>
+  </section>
+
+  <section id="event" hidden>
+    <div class="ev-head">
+      <div>
+        <h1 id="evName"></h1>
+        <p class="sub" id="evMeta"></p>
+      </div>
+      <div class="actions" id="evActions" hidden>
+        <button class="btn" id="refreshBtn" type="button" title="새로 고침">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+          <span id="syncText">새로 고침</span>
+        </button>
+        <button class="btn" id="exportBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          CSV
+        </button>
+        <button class="btn" id="backupBtn" type="button" hidden>백업(JSON)</button>
+      </div>
+    </div>
+
+    <div id="gate" class="panel gate" hidden>
+      <h2>현장 비밀번호</h2>
+      <p class="sub">이 행사의 업체·리더기 기록을 보려면 담당자에게 받은 비밀번호를 입력하세요. 한 번 입력하면 이 기기에서는 기억합니다.</p>
+      <form id="gateForm" class="gate-form">
+        <input id="gateCode" type="password" inputmode="text" autocomplete="off" placeholder="비밀번호" aria-label="현장 비밀번호">
+        <button class="btn primary" type="submit" id="gateBtn">확인</button>
+      </form>
+      <p class="err" id="gateErr" role="alert"></p>
+    </div>
+
+    <div id="evBody" hidden>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" id="tab-summary" data-tab="summary" type="button">현황</button>
+        <button class="tab" role="tab" id="tab-list" data-tab="list" type="button">업체·리더기<span class="count" id="listCount"></span></button>
+        <button class="tab" role="tab" id="tab-map" data-tab="map" type="button">부스배치도<span class="count" id="mapCount"></span></button>
+        <button class="tab" role="tab" id="tab-settings" data-tab="settings" type="button">행사 설정</button>
+      </div>
+
+      <div id="panel-summary" role="tabpanel"></div>
+
+      <div id="panel-list" role="tabpanel" hidden>
+        <div class="toolbar">
+          <div class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="q" type="search" placeholder="부스, 업체, 담당자, 리더기 번호 검색" aria-label="검색">
+          </div>
+          <select id="staffFilter" aria-label="담당 스태프"><option value="">담당 스태프 전체</option></select>
+          <button class="btn" id="pasteBtn" type="button">엑셀에서 붙여넣기</button>
+          <button class="btn primary" id="addRowBtn" type="button">업체 추가</button>
+        </div>
+        <div class="chips" id="statusChips" role="group" aria-label="상태 필터"></div>
+        <div class="list" id="list"></div>
+      </div>
+
+      <div id="panel-map" role="tabpanel" hidden></div>
+      <div id="panel-settings" role="tabpanel" hidden></div>
+    </div>
+  </section>
+</main>
+
+<div id="layer"></div>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+(() => {
+  // 구글 Apps Script 웹 앱 주소 (배포 후 받은 URL)
+  const API_URL = '__API_URL__';
+  const MAX_DAYS = 14;
+  const POLL_MS = 30000;
+
+  // ---------- helpers ----------
+  const $ = (id) => document.getElementById(id);
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else if (k in el && typeof v !== 'string') el[k] = v;
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat()) {
+      if (kid == null || kid === false) continue;
+      el.append(kid instanceof Node ? kid : String(kid));
+    }
+    return el;
+  }
+  const fmt = (n) => (Number(n) || 0).toLocaleString('ko-KR');
+  const pct = (a, b) => (b > 0 ? Math.round((a / b) * 100) : 0);
+  const int = (v) => { const n = parseInt(String(v ?? '').replace(/[^\d-]/g, ''), 10); return Number.isFinite(n) && n > 0 ? n : 0; };
+  const parseList = (s) => [...new Set(String(s || '').split(/[,\/\s]+/).map((x) => x.trim().toUpperCase()).filter(Boolean))];
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { if (v == null || v === '') localStorage.removeItem(k); else localStorage.setItem(k, v); } catch {} },
+  };
+  let toastTimer;
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.hidden = true; }, 2800);
+  }
+  const naturalBooth = (a, b) => {
+    if (!a.booth && b.booth) return 1;
+    if (a.booth && !b.booth) return -1;
+    return String(a.booth || '').localeCompare(String(b.booth || ''), 'ko', { numeric: true }) || (a.order || 0) - (b.order || 0);
+  };
+  function dateRange(e) {
+    const f = (d) => { if (!d) return ''; const [y, m, dd] = d.split('-'); return `${y}.${+m}.${+dd}`; };
+    if (!e.dateStart) return '';
+    if (!e.dateEnd || e.dateEnd === e.dateStart) return f(e.dateStart);
+    const [y1] = e.dateStart.split('-'); const [y2, m2, d2] = e.dateEnd.split('-');
+    return `${f(e.dateStart)} – ${y1 === y2 ? `${+m2}.${+d2}` : f(e.dateEnd)}`;
+  }
+  function download(filename, text, type) {
+    const blob = new Blob([text], { type });
+    const a = h('a', { href: URL.createObjectURL(blob), download: filename });
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // ---------- server ----------
+  let adminCode = store.get('rm.admin') || '';
+  const codeOf = (id) => store.get('rm.code.' + id) || '';
+  const authFor = (id) => ({ eventId: id, code: codeOf(id), admin: adminCode });
+  class ApiError extends Error { constructor(code, message, extra) { super(message); this.code = code; this.extra = extra || {}; } }
+  async function api(action, payload) {
+    let res;
+    try {
+      res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action, ...payload }) });
+    } catch (e) { throw new ApiError('network', '서버에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.'); }
+    let data;
+    try { data = await res.json(); } catch (e) { throw new ApiError('server', '서버 응답을 읽지 못했습니다. Apps Script 배포 설정(액세스: 모든 사용자)을 확인해 주세요.'); }
+    if (!data.ok) throw new ApiError(data.error || 'server', data.message || '처리하지 못했습니다.', data);
+    return data;
+  }
+  function failToast(e) {
+    if (e && e.code === 'unauthorized' && current) { store.set('rm.code.' + current, ''); showGate('비밀번호가 바뀌었거나 맞지 않습니다. 다시 입력해 주세요.'); }
+    else if (e && e.code === 'admin_required') { adminCode = ''; store.set('rm.admin', ''); applyRole(); toast(e.message); }
+    else toast((e && e.message) || '처리하지 못했습니다.');
+  }
+
+  // ---------- domain ----------
+  const STATUS = {
+    wait: { label: '배포 대기', cls: 's-wait' },
+    use: { label: '사용 중', cls: 's-use' },
+    part: { label: '일부 반납', cls: 's-part' },
+    done: { label: '반납 완료', cls: 's-done' },
+    none: { label: '미신청', cls: 's-none' },
+  };
+  const qtyOf = (r) => (int(r.pre) + int(r.onsite));
+  function statusOf(r) {
+    const total = qtyOf(r), out = (r.readers || []).length, ret = int(r.returned);
+    if (total === 0 && out === 0) return 'none';
+    if (out < total) return 'wait';
+    if (out > 0 && ret >= out) return 'done';
+    if (ret > 0) return 'part';
+    return 'use';
+  }
+  // 일차별 칸은 중간 점검 때 적어 두는 확인용 메모입니다(계산하지 않음).
+  function lastCheck(r, days) {
+    const list = r.days || [];
+    for (let d = days - 1; d >= 0; d--) {
+      const s = String(list[d] || '').trim();
+      if (s) return { day: d, raw: s };
+    }
+    return null;
+  }
+  function readerOwners(rows, exceptId) {
+    const map = new Map();
+    for (const r of rows) {
+      if (r.id === exceptId) continue;
+      for (const n of [...(r.readers || []), ...(r.replaced || [])]) {
+        if (!map.has(n)) map.set(n, []);
+        map.get(n).push(r);
+      }
+    }
+    return map;
+  }
+  function computeSummary(ev, rows) {
+    const s = { pre: 0, onsite: 0, qty: 0, out: 0, swap: 0, ret: 0, wait: 0, waitQty: 0 };
+    for (const r of rows) {
+      s.pre += int(r.pre); s.onsite += int(r.onsite);
+      s.out += (r.readers || []).length; s.swap += (r.replaced || []).length; s.ret += int(r.returned);
+      if (statusOf(r) === 'wait') { s.wait++; s.waitQty += qtyOf(r) - (r.readers || []).length; }
+    }
+    s.qty = s.pre + s.onsite;
+    s.inventory = int(ev.inventory);
+    s.defective = int(ev.defective);
+    s.left = s.inventory - (s.out + s.swap + s.defective);
+    s.data = s.out + s.swap;
+    s.unreturned = Math.max(0, s.out - s.ret);
+    return s;
+  }
+
+  // ---------- state ----------
+  let events = [];          // public list
+  let current = null;       // event id
+  let event = null;         // full event (authorized)
+  let rows = [];
+  let tab = store.get('rm.tab') || 'summary';
+  let statusFilter = '';
+  let lastSync = 0;
+  const isAdmin = () => !!adminCode;
+
+  function applyRole() {
+    $('adminPill').hidden = !isAdmin();
+    $('adminBtn').textContent = isAdmin() ? '로그아웃' : '관리자';
+    $('newEventBtn').hidden = !isAdmin();
+    $('importBtn').hidden = !isAdmin();
+    $('backupBtn').hidden = !isAdmin();
+  }
+
+  // ---------- navigation ----------
+  async function loadEvents() {
+    try {
+      const d = await api('events', {});
+      events = d.events || [];
+      renderHome();
+    } catch (e) {
+      $('homeEmpty').hidden = false;
+      $('homeEmpty').replaceChildren(h('h3', { text: '행사 목록을 불러오지 못했습니다' }), h('p', { text: e.message }),
+        h('button', { class: 'btn', type: 'button', text: '다시 시도', onclick: loadEvents }));
+    }
+  }
+  function go(id) {
+    current = id || null; event = null; rows = [];
+    store.set('rm.event', current || '');
+    $('home').hidden = !!current;
+    $('event').hidden = !current;
+    if (!current) { loadEvents(); window.scrollTo(0, 0); return; }
+    const pub = events.find((e) => e.id === id) || {};
+    $('evName').textContent = pub.name || '';
+    $('evMeta').textContent = [dateRange(pub), pub.venue].filter(Boolean).join(' · ');
+    $('q').value = ''; $('staffFilter').value = ''; statusFilter = '';
+    if (!codeOf(id) && !isAdmin()) { showGate(''); return; }
+    openEvent();
+    window.scrollTo(0, 0);
+  }
+  function showGate(msg) {
+    $('gate').hidden = false; $('evBody').hidden = true; $('evActions').hidden = true;
+    $('gateErr').textContent = msg || '';
+    $('gateCode').value = '';
+    setTimeout(() => $('gateCode').focus(), 30);
+  }
+  async function openEvent(silent) {
+    if (!current) return;
+    const id = current;
+    if (!silent) { $('gate').hidden = true; $('evBody').hidden = false; $('evActions').hidden = false; renderLoading(); }
+    try {
+      const d = await api('load', authFor(id));
+      if (current !== id) return;
+      const changed = JSON.stringify([d.event, d.rows]) !== JSON.stringify([event, rows]);
+      event = d.event; rows = d.rows || []; lastSync = Date.now();
+      $('gate').hidden = true; $('evBody').hidden = false; $('evActions').hidden = false;
+      if (changed || !silent) renderEvent(); else renderSync();
+    } catch (e) {
+      if (current !== id) return;
+      if (e.code === 'unauthorized') { store.set('rm.code.' + id, ''); showGate(silent ? '비밀번호가 바뀌었습니다. 다시 입력해 주세요.' : ''); return; }
+      if (e.code === 'not_found') { toast(e.message); go(null); return; }
+      if (!silent) { $('panel-summary').replaceChildren(h('div', { class: 'empty' }, h('h3', { text: '불러오지 못했습니다' }), h('p', { text: e.message }), h('button', { class: 'btn', type: 'button', text: '다시 시도', onclick: () => openEvent() }))); }
+    }
+  }
+  function renderLoading() {
+    for (const p of ['summary', 'list', 'map', 'settings']) $('panel-' + p).hidden = p !== tab;
+    for (const t of document.querySelectorAll('.tab')) t.setAttribute('aria-selected', String(t.dataset.tab === tab));
+    const box = $('panel-' + tab);
+    if (tab === 'list') $('list').replaceChildren(h('div', { class: 'empty', style: 'border:0' }, h('h3', { text: '불러오는 중입니다' })));
+    else box.replaceChildren(h('div', { class: 'empty' }, h('h3', { text: '불러오는 중입니다' })));
+  }
+  function renderSync() {
+    const s = lastSync ? new Date(lastSync) : null;
+    $('syncText').textContent = s ? `${String(s.getHours()).padStart(2, '0')}:${String(s.getMinutes()).padStart(2, '0')} 기준` : '새로 고침';
+  }
+
+  // ---------- home ----------
+  function renderHome() {
+    const list = $('eventList'), empty = $('homeEmpty');
+    list.replaceChildren(...events.map((e) => h('button', { class: 'ev-card', type: 'button', onclick: () => go(e.id) },
+      h('div', null, h('h3', { text: e.name || '이름 없는 행사' }),
+        h('div', { class: 'ev-meta', text: [dateRange(e), e.venue].filter(Boolean).join(' · ') || '일정 미정' })),
+      h('div', { class: 'ev-stats' },
+        h('span', null, '운영 ', h('b', { class: 'num', text: fmt(e.days || 0) }), '일'),
+        h('span', { text: codeOf(e.id) || isAdmin() ? '비밀번호 입력됨' : '비밀번호 필요' })))));
+    empty.hidden = events.length > 0;
+    if (!events.length) {
+      empty.replaceChildren(...[h('h3', { text: '아직 등록된 행사가 없습니다' }),
+        h('p', { text: isAdmin() ? '‘새 행사’로 행사를 만들거나 ‘백업 가져오기’로 이전 행사를 옮겨 오세요.' : '행사는 관리자가 만듭니다. 오른쪽 위 ‘관리자’로 로그인하면 새 행사를 만들 수 있습니다.' }),
+        isAdmin() ? h('button', { class: 'btn primary', type: 'button', onclick: openNewEvent, text: '새 행사 만들기' }) : null].filter(Boolean));
+    }
+  }
+
+  // ---------- event ----------
+  function renderEvent() {
+    const e = event;
+    if (!e) return;
+    $('evName').textContent = e.name || '이름 없는 행사';
+    $('evMeta').textContent = [dateRange(e), e.venue, `운영 ${e.days || 0}일`, e.inventory ? `보유 리더기 ${fmt(e.inventory)}대` : null].filter(Boolean).join(' · ');
+    $('listCount').textContent = rows.length;
+    $('mapCount').textContent = (e.floorplans || []).length || '';
+    renderSync();
+    for (const t of document.querySelectorAll('.tab')) t.setAttribute('aria-selected', String(t.dataset.tab === tab));
+    for (const p of ['summary', 'list', 'map', 'settings']) $('panel-' + p).hidden = p !== tab;
+    if (tab === 'summary') renderSummary(e);
+    if (tab === 'list') renderList(e);
+    if (tab === 'map') renderMap(e);
+    if (tab === 'settings') renderSettings(e);
+  }
+  function setTab(t) { tab = t; store.set('rm.tab', t); renderEvent(); }
+
+  function kpi(label, value, unit, foot, cls, bar) {
+    return h('div', { class: 'kpi ' + (cls || '') },
+      h('div', { class: 'label', text: label }),
+      h('div', { class: 'value' }, value, unit ? h('small', { text: unit }) : null),
+      foot ? h('div', { class: 'foot', text: foot }) : null,
+      bar != null ? h('div', { class: 'bar ' + (bar.cls || '') }, h('i', { style: `width:${Math.min(100, bar.v)}%` })) : null);
+  }
+  function mini(label, value, unit) {
+    return h('div', { class: 'mini' }, h('div', { class: 'label', text: label }),
+      h('div', { class: 'value' }, value, unit ? h('small', { text: unit }) : null));
+  }
+
+  function renderSummary(e) {
+    const p = $('panel-summary');
+    const s = computeSummary(e, rows);
+    const lowStock = s.inventory > 0 && s.left <= Math.max(5, Math.round(s.inventory * 0.1));
+    const kpis = h('div', { class: 'kpis' },
+      s.inventory > 0
+        ? kpi('남은 리더기', fmt(s.left), '대', `보유 ${fmt(s.inventory)} − 배포 ${fmt(s.out)} − 교체 ${fmt(s.swap)} − 불량 ${fmt(s.defective)}`, lowStock ? 'low' : 'main')
+        : kpi('남은 리더기', '—', null, '행사 설정에서 보유 리더기 수량을 입력하면 계산됩니다.', 'main'),
+      kpi('배포', fmt(s.out), `/ ${fmt(s.qty)}대`, `배포율 ${pct(s.out, s.qty)}%${s.waitQty ? ` · 대기 ${fmt(s.waitQty)}대` : ''}`, '', { v: pct(s.out, s.qty) }),
+      kpi('반납', fmt(s.ret), `/ ${fmt(s.qty)}대`, `반납률 ${pct(s.ret, s.qty)}% · 미반납 ${fmt(s.unreturned)}대`, '', { v: pct(s.ret, s.qty), cls: 'ok' }),
+      kpi('신청 업체', fmt(rows.length), '곳', `배포 대기 ${fmt(s.wait)}곳`));
+    const minis = h('div', { class: 'minis' },
+      mini('사전 신청', fmt(s.pre), '대'), mini('추가·현장', fmt(s.onsite), '대'),
+      mini('교체', fmt(s.swap), '대'), mini('불량', fmt(s.defective), '대'),
+      mini('데이터 추출 (배포+교체)', fmt(s.data), '대'));
+
+    const staffNames = [...new Set([...(e.staff || []), ...rows.map((r) => r.staff).filter(Boolean)])];
+    const agg = (list) => ({ co: list.length, qty: list.reduce((a, r) => a + qtyOf(r), 0), out: list.reduce((a, r) => a + (r.readers || []).length, 0), ret: list.reduce((a, r) => a + int(r.returned), 0) });
+    const staffRows = staffNames.map((name) => ({ name, ...agg(rows.filter((r) => r.staff === name)) }));
+    const unassigned = rows.filter((r) => !r.staff);
+    if (unassigned.length) staffRows.push({ name: '미지정', ...agg(unassigned) });
+    const staffPanel = h('div', { class: 'panel' },
+      h('h2', null, '담당 스태프별 현황'),
+      staffRows.length ? h('div', { style: 'overflow-x:auto' }, h('table', { class: 'plain' },
+        h('thead', null, h('tr', null, h('th', { text: '스태프' }), h('th', { class: 'r', text: '업체' }), h('th', { class: 'r', text: '신청' }), h('th', { class: 'r', text: '배포' }), h('th', { class: 'r', text: '반납' }))),
+        h('tbody', null, staffRows.map((x) => h('tr', null, h('td', { text: x.name }), h('td', { class: 'r', text: fmt(x.co) }), h('td', { class: 'r', text: fmt(x.qty) }), h('td', { class: 'r', text: fmt(x.out) }), h('td', { class: 'r', text: fmt(x.ret) }))))))
+        : h('p', { class: 'muted', text: '담당 스태프가 아직 없습니다. 행사 설정에서 추가할 수 있습니다.' }));
+    const notePanel = h('div', { class: 'panel' },
+      h('h2', null, '운영 메모', h('button', { class: 'btn ghost', type: 'button', onclick: () => setTab('settings'), text: '수정' })),
+      e.notes ? h('p', { class: 'note-text', text: e.notes }) : h('p', { class: 'muted', text: '분출 순서나 주의사항을 행사 설정에서 적어 두면 여기에 표시됩니다.' }));
+    p.replaceChildren(kpis, minis, h('div', { class: 'cols' }, staffPanel, notePanel));
+  }
+
+  function renderList(e) {
+    const list = $('list');
+    const sf = $('staffFilter'), cur = sf.value;
+    const staffNames = [...new Set([...(e.staff || []), ...rows.map((r) => r.staff).filter(Boolean)])];
+    sf.replaceChildren(h('option', { value: '', text: '담당 스태프 전체' }), ...staffNames.map((n) => h('option', { value: n, text: n })));
+    sf.value = staffNames.includes(cur) ? cur : '';
+
+    const term = $('q').value.trim().toLowerCase();
+    const days = Math.max(1, int(e.days) || 1);
+    const owners = readerOwners(rows);
+    const base = rows.filter((r) => (!sf.value || r.staff === sf.value) &&
+      (!term || [r.booth, r.company, r.contact, r.phone, ...(r.readers || []), ...(r.replaced || [])].join(' ').toLowerCase().includes(term)));
+    const counts = {};
+    for (const r of base) { const st = statusOf(r); counts[st] = (counts[st] || 0) + 1; if ((r.replaced || []).length) counts.swap = (counts.swap || 0) + 1; }
+    if (statusFilter && !counts[statusFilter]) statusFilter = '';
+    $('statusChips').replaceChildren(
+      ...[['', '전체', base.length], ...['wait', 'use', 'part', 'done', 'none'].filter((k) => counts[k]).map((k) => [k, STATUS[k].label, counts[k]]), ...(counts.swap ? [['swap', '교체 있음', counts.swap]] : [])]
+        .map(([k, label, n]) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(statusFilter === k), onclick: () => { statusFilter = k; renderList(e); } }, label, h('span', { class: 'n', text: n }))));
+    const shown = base.filter((r) => !statusFilter || (statusFilter === 'swap' ? (r.replaced || []).length > 0 : statusOf(r) === statusFilter)).sort(naturalBooth);
+
+    if (!rows.length) {
+      list.replaceChildren(h('div', { class: 'empty', style: 'border:0' },
+        h('h3', { text: '등록된 업체가 없습니다' }),
+        h('p', { text: '‘업체 추가’로 한 곳씩 넣거나, 엑셀 리더기 시트를 머리글 행까지 복사해 ‘엑셀에서 붙여넣기’로 한 번에 넣을 수 있습니다.' })));
+      return;
+    }
+    const head = h('div', { class: 'lhead' }, ...['부스', '업체 · 수령자', '담당', '신청 (사전/현장)', '리더기 번호', '반납', '점검 기록', '상태'].map((t) => h('span', { text: t })));
+    const items = shown.map((r) => {
+      const st = statusOf(r), l = lastCheck(r, days);
+      const dupTag = (n) => (owners.get(n) || []).length > 1;
+      return h('button', { class: 'lrow', type: 'button', onclick: () => openRow(r.id) },
+        h('span', { class: 'booth c-booth', text: r.booth || '-' }),
+        h('span', { class: 'c-co' }, h('div', { class: 'co', text: r.company || '(업체명 없음)' }), h('div', { class: 'who', text: [r.contact, r.title].filter(Boolean).join(' · ') })),
+        h('span', { class: 'c-staff', text: r.staff || '-' }),
+        h('span', { class: 'qty c-qty' }, `${qtyOf(r)}대`, h('small', { text: `${int(r.pre)} / ${int(r.onsite)}` })),
+        h('span', { class: 'tags c-tags' },
+          (r.readers || []).map((n) => h('span', { class: 'tag' + (dupTag(n) ? ' dup' : ''), title: dupTag(n) ? '다른 업체에도 등록된 번호입니다' : null, text: n })),
+          (r.replaced || []).map((n) => h('span', { class: 'tag swap', title: '사용 중 교체로 회수한 리더기 — 데이터 추출 대상', text: n })),
+          !(r.readers || []).length ? h('span', { class: 'muted', text: '미배포' }) : null),
+        h('span', { class: 'qty c-ret', text: `${int(r.returned)} / ${(r.readers || []).length}` }),
+        h('span', { class: 'c-scan', title: l ? `${l.day + 1}일차 점검 기록` : null }, l ? [h('small', { class: 'muted', text: `${l.day + 1}일차 ` }), l.raw] : h('span', { class: 'muted', text: '-' })),
+        h('span', { class: 'c-meta', text: [r.staff && `담당 ${r.staff}`, `신청 ${qtyOf(r)}대`, `반납 ${int(r.returned)}`, l && `${l.day + 1}일차 점검 ${l.raw}`].filter(Boolean).join(' · ') }),
+        h('span', { class: 'c-status' }, h('span', { class: 'pill ' + STATUS[st].cls, text: STATUS[st].label })));
+    });
+    list.replaceChildren(head, ...(items.length ? items : [h('div', { class: 'empty', style: 'border:0', text: '조건에 맞는 업체가 없습니다.' })]));
+  }
+
+  // ---------- floor plans ----------
+  const planCache = new Map(); // fileId -> dataURL
+  let planSel = null, planZoom = 1;
+  function renderMap(e) {
+    const p = $('panel-map');
+    const plans = e.floorplans || [];
+    if (planSel && !plans.some((f) => f.id === planSel)) planSel = null;
+    if (!planSel && plans.length) planSel = plans[0].id;
+    const upload = h('button', { class: 'btn primary', type: 'button', text: '배치도 올리기', onclick: openUploadPlan });
+    if (!plans.length) {
+      p.replaceChildren(h('div', { class: 'empty' },
+        h('h3', { text: '등록된 부스배치도가 없습니다' }),
+        h('p', { text: '배치도 이미지(JPG·PNG)나 PDF를 올리면 현장에서 이 탭에서 확대해 볼 수 있습니다.' }), upload));
+      return;
+    }
+    const chips = h('div', { class: 'chips' }, plans.map((f) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(f.id === planSel), text: f.title || '부스배치도', onclick: () => { planSel = f.id; planZoom = 1; renderMap(e); } })));
+    const fp = plans.find((f) => f.id === planSel);
+    const img = h('img', { class: 'plan-img', alt: fp.title || '부스배치도', draggable: 'false' });
+    const stage = h('div', { class: 'plan-stage', tabindex: '0', 'aria-label': '부스배치도. 확대 버튼이나 손가락으로 확대할 수 있습니다.' }, h('div', { class: 'plan-loading', text: '배치도를 불러오는 중…' }));
+    const applyZoom = () => { img.style.width = `${Math.round(planZoom * 100)}%`; zoomLabel.textContent = `${Math.round(planZoom * 100)}%`; };
+    const zoomLabel = h('span', { class: 'zoom-label num' });
+    const zoomBy = (f) => {
+      const cx = stage.scrollLeft + stage.clientWidth / 2, cy = stage.scrollTop + stage.clientHeight / 2;
+      const old = planZoom; planZoom = Math.min(6, Math.max(1, planZoom * f)); applyZoom();
+      const k = planZoom / old; stage.scrollLeft = cx * k - stage.clientWidth / 2; stage.scrollTop = cy * k - stage.clientHeight / 2;
+    };
+    const del = h('button', { class: 'btn danger', type: 'button', text: '이 배치도 삭제' });
+    let armed = false;
+    del.addEventListener('click', async () => {
+      if (!armed) { armed = true; del.classList.add('armed'); del.textContent = '한 번 더 누르면 삭제'; setTimeout(() => { armed = false; del.classList.remove('armed'); del.textContent = '이 배치도 삭제'; }, 3500); return; }
+      del.disabled = true;
+      try { const d = await api('deleteFloorplan', { ...authFor(e.id), fileId: fp.id }); event = d.event; planCache.delete(fp.id); planSel = null; toast('배치도를 삭제했습니다.'); renderEvent(); }
+      catch (err) { del.disabled = false; failToast(err); }
+    });
+    const tools = h('div', { class: 'plan-tools' },
+      h('button', { class: 'btn', type: 'button', 'aria-label': '축소', text: '−', onclick: () => zoomBy(1 / 1.5) }),
+      zoomLabel,
+      h('button', { class: 'btn', type: 'button', 'aria-label': '확대', text: '+', onclick: () => zoomBy(1.5) }),
+      h('button', { class: 'btn', type: 'button', text: '맞춤', onclick: () => { planZoom = 1; applyZoom(); } }),
+      h('span', { class: 'spacer' }), upload, del);
+    p.replaceChildren(chips, tools, stage);
+    applyZoom();
+    // drag to pan with a mouse (touch devices scroll natively)
+    let drag = null;
+    stage.addEventListener('pointerdown', (ev) => { if (ev.pointerType !== 'mouse') return; drag = { x: ev.clientX, y: ev.clientY, l: stage.scrollLeft, t: stage.scrollTop }; stage.setPointerCapture(ev.pointerId); stage.classList.add('dragging'); });
+    stage.addEventListener('pointermove', (ev) => { if (!drag) return; stage.scrollLeft = drag.l - (ev.clientX - drag.x); stage.scrollTop = drag.t - (ev.clientY - drag.y); });
+    const endDrag = () => { drag = null; stage.classList.remove('dragging'); };
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+    stage.addEventListener('dblclick', () => zoomBy(planZoom >= 3 ? 1 / planZoom : 2));
+    const show = (src) => { img.src = src; stage.replaceChildren(img); };
+    if (planCache.has(fp.id)) show(planCache.get(fp.id));
+    else api('floorplan', { ...authFor(e.id), fileId: fp.id })
+      .then((d) => { const src = `data:${d.mime};base64,${d.data}`; planCache.set(fp.id, src); if (planSel === fp.id) show(src); })
+      .catch((err) => { stage.replaceChildren(h('div', { class: 'plan-loading', text: err.message })); });
+  }
+
+  let pdfjsReady = null;
+  function loadPdfJs() {
+    if (pdfjsReady) return pdfjsReady;
+    pdfjsReady = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; resolve(window.pdfjsLib); };
+      s.onerror = () => { pdfjsReady = null; reject(new Error('PDF를 여는 도구를 불러오지 못했습니다.')); };
+      document.head.append(s);
+    });
+    return pdfjsReady;
+  }
+  const MAX_SIDE = 2600;
+  function canvasToJpeg(canvas) { return canvas.toDataURL('image/jpeg', 0.86).split(',')[1]; }
+  async function imageFileToJpeg(file) {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('이미지를 열 수 없습니다.')); i.src = url; });
+      const k = Math.min(1, MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = h('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+      const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+      return [canvasToJpeg(c)];
+    } finally { URL.revokeObjectURL(url); }
+  }
+  async function pdfFileToJpegs(file) {
+    const lib = await loadPdfJs();
+    const doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
+    const out = [];
+    for (let i = 1; i <= Math.min(doc.numPages, 6); i++) {
+      const page = await doc.getPage(i);
+      const v1 = page.getViewport({ scale: 1 });
+      const viewport = page.getViewport({ scale: MAX_SIDE / Math.max(v1.width, v1.height) });
+      const c = h('canvas'); c.width = Math.round(viewport.width); c.height = Math.round(viewport.height);
+      const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      out.push(canvasToJpeg(c));
+    }
+    return out;
+  }
+  function openUploadPlan() {
+    const e = event; if (!e) return;
+    const fileIn = h('input', { id: 'u-file', type: 'file', accept: 'image/jpeg,image/png,image/webp,application/pdf' });
+    const titleIn = h('input', { id: 'u-title', value: (e.floorplans || []).length ? '' : '부스배치도', placeholder: '예: 1홀, 전체 배치도' });
+    const info = h('p', { class: 'hint' });
+    const go2 = h('button', { class: 'btn primary', type: 'submit', id: 'u-save', text: '올리기' });
+    const form = h('form', { class: 'modal', 'aria-label': '배치도 올리기' },
+      h('h2', { text: '부스배치도 올리기' }),
+      h('p', { class: 'sub', style: 'margin-bottom:14px', text: 'JPG·PNG 이미지나 PDF를 고르세요. PDF는 쪽마다 한 장씩(최대 6쪽) 이미지로 바뀌어 올라갑니다.' }),
+      h('div', { class: 'form' },
+        h('div', { class: 'field full' }, h('label', { for: 'u-file', text: '파일' }), fileIn),
+        h('div', { class: 'field full' }, h('label', { for: 'u-title', text: '이름' }), titleIn)),
+      info,
+      h('div', { class: 'form-actions' }, h('button', { class: 'btn', type: 'button', onclick: closeLayer, text: '취소' }), go2));
+    form.addEventListener('submit', async (evt) => {
+      evt.preventDefault();
+      const file = fileIn.files && fileIn.files[0];
+      if (!file) { info.textContent = '파일을 골라 주세요.'; return; }
+      const title = titleIn.value.trim() || file.name.replace(/\.[^.]+$/, '');
+      go2.disabled = true; info.textContent = '이미지로 바꾸는 중…';
+      try {
+        const pages = file.type === 'application/pdf' || /\.pdf$/i.test(file.name) ? await pdfFileToJpegs(file) : await imageFileToJpeg(file);
+        let d;
+        for (let i = 0; i < pages.length; i++) {
+          info.textContent = `올리는 중… ${i + 1}/${pages.length}`;
+          d = await api('uploadFloorplan', { ...authFor(e.id), title: pages.length > 1 ? `${title} (${i + 1}/${pages.length})` : title, mime: 'image/jpeg', data: pages[i] });
+        }
+        event = d.event; planSel = (event.floorplans || []).slice(-pages.length)[0]?.id || null; planZoom = 1;
+        closeLayer(); toast('배치도를 올렸습니다.'); setTab('map');
+      } catch (err) { go2.disabled = false; info.textContent = err.message || '올리지 못했습니다.'; if (err.code === 'unauthorized') failToast(err); }
+    });
+    openLayer(form);
+  }
+
+  // ---------- settings ----------
+  function renderSettings(e) {
+    const p = $('panel-settings');
+    const f = (id, label, input, help, full) => h('div', { class: 'field' + (full ? ' full' : '') }, h('label', { for: id, text: label }), input, help ? h('div', { class: 'help', text: help }) : null);
+    const form = h('form', { class: 'panel', id: 'settingsForm' },
+      h('div', { class: 'form' },
+        f('s-name', '행사명', h('input', { id: 's-name', required: true, value: e.name || '' })),
+        f('s-venue', '장소', h('input', { id: 's-venue', value: e.venue || '', placeholder: '예: 킨텍스 1홀' })),
+        f('s-start', '시작일', h('input', { id: 's-start', type: 'date', value: e.dateStart || '' })),
+        f('s-end', '종료일', h('input', { id: 's-end', type: 'date', value: e.dateEnd || '' })),
+        f('s-days', '운영 일수', h('input', { id: 's-days', type: 'number', min: '1', max: String(MAX_DAYS), value: String(e.days || 1) }), `업체마다 일차별 점검 기록 칸이 이만큼 생깁니다. 최대 ${MAX_DAYS}일.`),
+        f('s-inv', '보유 리더기 수량', h('input', { id: 's-inv', type: 'number', min: '0', value: String(int(e.inventory)) }), '현장에 가져간 리더기 전체 수량'),
+        f('s-def', '불량 수량', h('input', { id: 's-def', type: 'number', min: '0', value: String(int(e.defective)) }), '남은 수량 계산에서 빠집니다.'),
+        f('s-staff', '담당 스태프', h('input', { id: 's-staff', value: (e.staff || []).join(', '), placeholder: '쉼표로 구분: 홍길동, 김예시' })),
+        isAdmin() ? f('s-code', '현장 비밀번호 (관리자만)', h('input', { id: 's-code', placeholder: '바꿀 때만 입력', autocomplete: 'off' }), '바꾸면 스태프는 새 비밀번호로 다시 들어와야 합니다.') : null,
+        f('s-notes', '운영 메모', h('textarea', { id: 's-notes', text: e.notes || '' }), '분출 순서, 주의사항 등. 현황 탭에 그대로 보입니다.', true)),
+      h('div', { class: 'form-actions' }, h('button', { class: 'btn primary', type: 'submit', id: 's-save', text: '설정 저장' })));
+    form.addEventListener('submit', async (evt) => {
+      evt.preventDefault();
+      const patch = {
+        name: $('s-name').value.trim() || '이름 없는 행사', venue: $('s-venue').value.trim(),
+        dateStart: $('s-start').value, dateEnd: $('s-end').value,
+        days: Math.min(MAX_DAYS, Math.max(1, int($('s-days').value) || 1)),
+        inventory: int($('s-inv').value), defective: int($('s-def').value),
+        staff: [...new Set($('s-staff').value.split(',').map((x) => x.trim()).filter(Boolean))],
+        notes: $('s-notes').value,
+      };
+      const newCode = isAdmin() && $('s-code') ? $('s-code').value.trim() : '';
+      if (newCode) patch.passcode = newCode;
+      const btn = $('s-save'); btn.disabled = true;
+      try {
+        const d = await api('updateEvent', { ...authFor(e.id), patch });
+        event = d.event;
+        if (newCode) store.set('rm.code.' + e.id, newCode);
+        toast(newCode ? '설정과 현장 비밀번호를 저장했습니다.' : '행사 설정을 저장했습니다.');
+        renderEvent();
+      } catch (err) { failToast(err); } finally { btn.disabled = false; }
+    });
+    const nodes = [form];
+    if (isAdmin()) {
+      const del = h('button', { class: 'btn danger', type: 'button', text: '이 행사 삭제' });
+      let armed = false;
+      del.addEventListener('click', async () => {
+        if (!armed) { armed = true; del.classList.add('armed'); del.textContent = `한 번 더 누르면 업체 ${rows.length}곳과 함께 삭제됩니다`; setTimeout(() => { armed = false; del.classList.remove('armed'); del.textContent = '이 행사 삭제'; }, 4000); return; }
+        del.disabled = true; del.textContent = '삭제하는 중…';
+        try { await api('deleteEvent', authFor(e.id)); store.set('rm.code.' + e.id, ''); toast('행사를 삭제했습니다.'); go(null); }
+        catch (err) { del.disabled = false; del.textContent = '이 행사 삭제'; failToast(err); }
+      });
+      nodes.push(h('div', { class: 'panel danger-zone' }, h('h2', null, '행사 삭제 (관리자)'), h('p', { text: '행사와 등록된 업체·리더기 기록, 배치도가 모두 지워지고 되돌릴 수 없습니다. 지우기 전에 CSV나 백업(JSON)으로 받아 두세요.' }), del));
+    }
+    nodes.push(h('p', { class: 'hint', text: '이 기기에 저장된 비밀번호를 지우려면: ' }, h('button', { class: 'btn ghost', type: 'button', text: '이 기기에서 나가기', onclick: () => { store.set('rm.code.' + e.id, ''); toast('이 기기에서 비밀번호를 지웠습니다.'); go(null); } })));
+    p.replaceChildren(...nodes);
+  }
+
+  // ---------- layer ----------
+  function closeLayer() { $('layer').replaceChildren(); document.body.classList.remove('locked'); }
+  function openLayer(node) {
+    const scrim = h('div', { class: 'scrim', onclick: closeLayer });
+    $('layer').replaceChildren(scrim, node);
+    document.body.classList.add('locked');
+    const first = node.querySelector('input:not([disabled]):not([type=file]), textarea:not([disabled])');
+    if (first) setTimeout(() => first.focus(), 30);
+  }
+  const layerOpen = () => !!$('layer').firstChild;
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && layerOpen()) closeLayer(); });
+
+  // ---------- row drawer ----------
+  function openRow(id, notice) {
+    const e = event; if (!e) return;
+    const r = id ? rows.find((x) => x.id === id) : null;
+    const row = r ? { ...r } : { staff: '', booth: '', company: '', contact: '', title: '', phone: '', email: '', pre: 0, onsite: 0, readers: [], replaced: [], days: [], returned: 0, note: '' };
+    const days = Math.max(1, int(e.days) || 1);
+    const staffNames = [...new Set([...(e.staff || []), ...rows.map((x) => x.staff).filter(Boolean)])];
+    const f = (fid, label, input, help, full) => h('div', { class: 'field' + (full ? ' full' : '') }, h('label', { for: fid, text: label }), input, help ? h('div', { class: 'help', text: help }) : null);
+    const err = h('div', { class: 'err', role: 'alert', text: notice || '' });
+
+    const readersIn = h('input', { id: 'r-readers', class: 'mono', value: (row.readers || []).join(', '), placeholder: '예: I29, G04', autocomplete: 'off' });
+    const swapIn = h('input', { id: 'r-replaced', class: 'mono', value: (row.replaced || []).join(', '), placeholder: '교체되어 회수한 번호', autocomplete: 'off' });
+    const dataLine = h('div', { class: 'data-line', style: 'grid-column: 1 / -1' });
+    const syncData = () => {
+      const all = [...parseList(readersIn.value), ...parseList(swapIn.value)];
+      dataLine.replaceChildren('데이터 받을 리더기 ', h('b', { text: `${all.length}대` }), all.length ? ` · ${all.join(', ')}` : '');
+    };
+    readersIn.addEventListener('input', syncData);
+    swapIn.addEventListener('input', syncData);
+    syncData();
+    const retIn = h('input', { id: 'r-returned', type: 'number', min: '0', value: String(int(row.returned)) });
+    const original = (row.days || []).slice();
+    const dayInputs = Array.from({ length: days }, (_, d) => h('input', { id: `r-day${d}`, value: original[d] || '', placeholder: '예: 26, 94', autocomplete: 'off' }));
+    const scanBox = h('div', { class: 'form' }, dayInputs.map((input, d) => f(`r-day${d}`, `${d + 1}일차`, input)));
+    const addDay = h('button', { class: 'btn', type: 'button', style: 'justify-self:start' });
+    const syncAddDay = () => {
+      const n = dayInputs.length;
+      addDay.textContent = n >= MAX_DAYS ? `최대 ${MAX_DAYS}일차까지 추가할 수 있습니다` : `+ ${n + 1}일차 칸 추가`;
+      addDay.disabled = n >= MAX_DAYS;
+    };
+    syncAddDay();
+    addDay.addEventListener('click', async () => {
+      const n = dayInputs.length;
+      if (n >= MAX_DAYS) return;
+      addDay.disabled = true;
+      try {
+        if ((int(event.days) || 1) < n + 1) { const d = await api('updateEvent', { ...authFor(e.id), patch: { days: n + 1 } }); event = d.event; }
+        const input = h('input', { id: `r-day${n}`, value: original[n] || '', placeholder: '예: 26, 94', autocomplete: 'off' });
+        dayInputs.push(input);
+        scanBox.append(f(`r-day${n}`, `${n + 1}일차`, input));
+        input.focus();
+        toast(`${n + 1}일차 칸을 추가했습니다. 모든 업체에 함께 생깁니다.`);
+      } catch (er) { failToast(er); }
+      syncAddDay();
+    });
+    const fillReturn = h('button', { class: 'btn', type: 'button', text: '전량 반납', onclick: () => { retIn.value = String(parseList(readersIn.value).length); } });
+
+    const form = h('form', { class: 'drawer', 'aria-label': '업체 정보' },
+      h('header', null, h('h2', { text: r ? (r.company || '업체 정보') : '업체 추가' }), h('button', { class: 'btn ghost', type: 'button', onclick: closeLayer, 'aria-label': '닫기', text: '닫기' })),
+      h('div', { class: 'body' },
+        h('p', { class: 'section-title', text: '업체 · 수령자' }),
+        h('div', { class: 'form' },
+          f('r-booth', '부스번호', h('input', { id: 'r-booth', class: 'mono', value: row.booth || '' })),
+          f('r-staff', '담당 스태프', h('input', { id: 'r-staff', value: row.staff || '', list: 'staffList' })),
+          f('r-company', '업체명', h('input', { id: 'r-company', value: row.company || '', required: true }), null, true),
+          f('r-contact', '수령자(담당자)', h('input', { id: 'r-contact', value: row.contact || '' })),
+          f('r-title', '직위', h('input', { id: 'r-title', value: row.title || '' })),
+          f('r-phone', '휴대폰번호', h('input', { id: 'r-phone', value: row.phone || '', inputmode: 'tel' })),
+          f('r-email', 'E-mail', h('input', { id: 'r-email', value: row.email || '', inputmode: 'email' }))),
+        h('datalist', { id: 'staffList' }, staffNames.map((n) => h('option', { value: n }))),
+        h('p', { class: 'section-title', text: '신청 · 배포' }),
+        h('div', { class: 'form' },
+          f('r-pre', '사전 신청 수량', h('input', { id: 'r-pre', type: 'number', min: '0', value: String(int(row.pre)) })),
+          f('r-onsite', '추가 + 현장 수량', h('input', { id: 'r-onsite', type: 'number', min: '0', value: String(int(row.onsite)) }), '전시 시작 후 추가분은 여기에만'),
+          f('r-readers', '리더기 번호', readersIn, '배포한 리더기 번호를 쉼표로 구분해 입력. 교체 후에는 새 번호를 적습니다.', true),
+          f('r-replaced', '교체 전 리더기 (회수한 번호)', swapIn, '사용 중 교체로 회수한 이전 리더기 번호. 이 리더기도 데이터를 받아 전달해야 해서 데이터 추출 대상에 들어가고, 행사장 재배포 금지라 남은 수량에서 빠집니다.', true),
+          dataLine),
+        h('p', { class: 'section-title', text: '반납' }),
+        h('div', { class: 'inline' }, f('r-returned', '반납 수량', retIn), fillReturn),
+        h('p', { class: 'section-title', text: '일차별 점검 기록' }),
+        h('p', { class: 'help muted', style: 'margin:0;font-size:12px', text: '중간 점검 때 확인한 스캔 수를 적어 두는 확인용 칸입니다. 계산에는 쓰이지 않습니다.' }),
+        scanBox,
+        addDay,
+        f('r-note', '비고', h('textarea', { id: 'r-note', text: row.note || '', style: 'min-height:70px' }), null, true),
+        err),
+      h('footer', null,
+        r ? delButton(r) : null,
+        h('span', { class: 'spacer' }),
+        h('button', { class: 'btn', type: 'button', onclick: closeLayer, text: '취소' }),
+        h('button', { class: 'btn primary', type: 'submit', id: 'r-save', text: '저장' })));
+
+    form.addEventListener('submit', async (evt) => {
+      evt.preventDefault();
+      err.textContent = '';
+      const readers = parseList(readersIn.value), replaced = parseList(swapIn.value);
+      const company = $('r-company').value.trim();
+      if (!company) { err.textContent = '업체명을 입력해 주세요.'; $('r-company').focus(); return; }
+      const both = readers.filter((n) => replaced.includes(n));
+      if (both.length) { err.textContent = `${both.join(', ')}: 같은 번호가 리더기 번호와 교체 칸에 함께 있습니다.`; return; }
+      const owners = readerOwners(rows, r && r.id);
+      const clash = [...readers, ...replaced].filter((n) => owners.has(n));
+      if (clash.length) {
+        err.textContent = clash.map((n) => `${n}은(는) ${owners.get(n).map((x) => `${x.booth ? x.booth + ' ' : ''}${x.company}`).join(', ')}에 이미 등록되어 있습니다`).join(' / ') + '. 번호를 확인해 주세요.';
+        return;
+      }
+      const outDays = original.slice();
+      dayInputs.forEach((input, d) => { outDays[d] = input.value.trim(); });
+      const data = {
+        id: r ? r.id : undefined,
+        booth: $('r-booth').value.trim(), staff: $('r-staff').value.trim(), company,
+        contact: $('r-contact').value.trim(), title: $('r-title').value.trim(),
+        phone: $('r-phone').value.trim(), email: $('r-email').value.trim(),
+        pre: int($('r-pre').value), onsite: int($('r-onsite').value),
+        readers, replaced, days: outDays, returned: int(retIn.value), note: $('r-note').value.trim(),
+      };
+      const btn = $('r-save'); btn.disabled = true; btn.textContent = '저장 중…';
+      try {
+        const d = await api('saveRow', { ...authFor(e.id), row: data, baseUpdatedAt: r ? r.updatedAt : '' });
+        const i = rows.findIndex((x) => x.id === d.row.id);
+        if (i >= 0) rows[i] = d.row; else rows.push(d.row);
+        closeLayer(); renderEvent();
+        toast(r ? '저장했습니다.' : `${company}을(를) 추가했습니다.`);
+      } catch (er) {
+        btn.disabled = false; btn.textContent = '저장';
+        if (er.code === 'conflict' && er.extra.row) {
+          const i = rows.findIndex((x) => x.id === er.extra.row.id);
+          if (i >= 0) rows[i] = er.extra.row;
+          renderEvent(); openRow(er.extra.row.id, er.message);
+        } else if (er.code === 'duplicate' || er.code === 'bad_request' || er.code === 'not_found') err.textContent = er.message;
+        else failToast(er);
+      }
+    });
+    openLayer(form);
+  }
+  function delButton(r) {
+    const e = event;
+    const b = h('button', { class: 'btn danger', type: 'button', text: '삭제' });
+    let armed = false;
+    b.addEventListener('click', async () => {
+      if (!armed) { armed = true; b.classList.add('armed'); b.textContent = '한 번 더 누르면 삭제'; setTimeout(() => { armed = false; b.classList.remove('armed'); b.textContent = '삭제'; }, 3500); return; }
+      b.disabled = true;
+      try { await api('deleteRow', { ...authFor(e.id), rowId: r.id }); rows = rows.filter((x) => x.id !== r.id); closeLayer(); renderEvent(); toast('삭제했습니다.'); }
+      catch (er) { b.disabled = false; failToast(er); }
+    });
+    return b;
+  }
+
+  // ---------- admin ----------
+  function openAdminLogin() {
+    if (isAdmin()) { adminCode = ''; store.set('rm.admin', ''); applyRole(); toast('관리자에서 로그아웃했습니다.'); if (current) go(current); else renderHome(); return; }
+    const input = h('input', { id: 'a-code', type: 'password', autocomplete: 'off' });
+    const err = h('div', { class: 'err', role: 'alert' });
+    const form = h('form', { class: 'modal', 'aria-label': '관리자 로그인' },
+      h('h2', { text: '관리자 로그인' }),
+      h('p', { class: 'sub', style: 'margin-bottom:14px', text: '행사 만들기·삭제, 현장 비밀번호 설정은 관리자만 할 수 있습니다.' }),
+      h('div', { class: 'field' }, h('label', { for: 'a-code', text: '관리자 비밀번호' }), input),
+      err,
+      h('div', { class: 'form-actions' }, h('button', { class: 'btn', type: 'button', onclick: closeLayer, text: '취소' }), h('button', { class: 'btn primary', type: 'submit', id: 'a-save', text: '로그인' })));
+    form.addEventListener('submit', async (evt) => {
+      evt.preventDefault();
+      $('a-save').disabled = true;
+      try {
+        const d = await api('adminCheck', { admin: input.value.trim() });
+        if (!d.admin) { err.textContent = '관리자 비밀번호가 맞지 않습니다.'; $('a-save').disabled = false; return; }
+        adminCode = input.value.trim(); store.set('rm.admin', adminCode); applyRole();
+        closeLayer(); toast('관리자로 로그인했습니다.');
+        if (current) go(current); else renderHome();
+      } catch (er) { err.textContent = er.message; $('a-save').disabled = false; }
+    });
+    openLayer(form);
+  }
+
+  function openNewEvent() {
+    if (!isAdmin()) return;
+    const f = (fid, label, input, help, full) => h('div', { class: 'field' + (full ? ' full' : '') }, h('label', { for: fid, text: label }), input, help ? h('div', { class: 'help', text: help }) : null);
+    const copyFrom = h('select', { id: 'n-copy' }, h('option', { value: '', text: '가져오지 않음' }), events.map((e) => h('option', { value: e.id, text: e.name || '이름 없는 행사' })));
+    const err = h('div', { class: 'err', role: 'alert' });
+    const form = h('form', { class: 'modal', 'aria-label': '새 행사' },
+      h('h2', { text: '새 행사' }),
+      h('p', { class: 'sub', style: 'margin-bottom:16px', text: '행사를 만든 뒤 업체를 추가하거나 엑셀 시트를 붙여넣으세요. 현장 비밀번호를 스태프에게 알려주면 바로 입력할 수 있습니다.' }),
+      h('div', { class: 'form' },
+        f('n-name', '행사명', h('input', { id: 'n-name', required: true, placeholder: '예: AMXPO 2026' }), null, true),
+        f('n-start', '시작일', h('input', { id: 'n-start', type: 'date' })),
+        f('n-end', '종료일', h('input', { id: 'n-end', type: 'date' })),
+        f('n-venue', '장소', h('input', { id: 'n-venue', placeholder: '예: 킨텍스' })),
+        f('n-days', '운영 일수', h('input', { id: 'n-days', type: 'number', min: '1', max: String(MAX_DAYS), value: '3' })),
+        f('n-inv', '보유 리더기 수량', h('input', { id: 'n-inv', type: 'number', min: '0', placeholder: '예: 150' })),
+        f('n-code', '현장 비밀번호', h('input', { id: 'n-code', required: true, autocomplete: 'off', placeholder: '스태프에게 알려줄 비밀번호' })),
+        f('n-copy', '이전 행사에서 가져오기', copyFrom, '담당 스태프와 운영 메모(분출 순서)를 복사합니다.', true)),
+      err,
+      h('div', { class: 'form-actions' },
+        h('button', { class: 'btn', type: 'button', onclick: closeLayer, text: '취소' }),
+        h('button', { class: 'btn primary', type: 'submit', id: 'n-save', text: '행사 만들기' })));
+    form.addEventListener('submit', async (evt) => {
+      evt.preventDefault();
+      const name = $('n-name').value.trim(), code = $('n-code').value.trim();
+      if (!name) { err.textContent = '행사명을 입력해 주세요.'; return; }
+      if (!code) { err.textContent = '현장 비밀번호를 정해 주세요.'; return; }
+      $('n-save').disabled = true;
+      try {
+        let staff = [], notes = '';
+        if (copyFrom.value) { const src = await api('load', authFor(copyFrom.value)); staff = src.event.staff || []; notes = src.event.notes || ''; }
+        const start = $('n-start').value;
+        const d = await api('createEvent', {
+          admin: adminCode, passcode: code,
+          event: { name, venue: $('n-venue').value.trim(), dateStart: start, dateEnd: $('n-end').value || start, days: int($('n-days').value) || 1, inventory: int($('n-inv').value), defective: 0, staff, notes },
+        });
+        store.set('rm.code.' + d.event.id, code);
+        closeLayer(); toast(`${name}을(를) 만들었습니다. 현장 비밀번호: ${code}`);
+        await loadEvents(); tab = 'list'; store.set('rm.tab', tab); go(d.event.id);
+      } catch (er) { $('n-save').disabled = false; err.textContent = er.message; }
+    });
+    openLayer(form);
+  }
+
+  function openImport() {
+    if (!isAdmin()) return;
+    const fileIn = h('input', { id: 'i-file', type: 'file', accept: 'application/json,.json' });
+    const codeIn = h('input', { id: 'i-code', autocomplete: 'off', placeholder: '이 행사에 쓸 현장 비밀번호' });
+    const info = h('p', { class: 'hint' });
+    let parsed = null;
+    fileIn.addEventListener('change', async () => {
+      parsed = null; info.textContent = '';
+      const file = fileIn.files && fileIn.files[0]; if (!file) return;
+      try {
+        const j = JSON.parse(await file.text());
+        if (!j.event || !Array.isArray(j.rows)) throw new Error();
+        parsed = j; info.textContent = `${j.event.name || '이름 없는 행사'} · 업체 ${j.rows.length}곳`;
+      } catch { info.textContent = '백업(JSON) 파일 형식이 아닙니다.'; }
+    });
+    const form = h('form', { class: 'modal', 'aria-label': '백업 가져오기' },
+      h('h2', { text: '백업 가져오기' }),
+      h('p', { class: 'sub', style: 'margin-bottom:14px', text: '‘백업(JSON)’으로 받아 둔 파일을 새 행사로 가져옵니다. 이전 행사 기록을 옮길 때 씁니다.' }),
+      h('div', { class: 'form' },
+        h('div', { class: 'field full' }, h('label', { for: 'i-file', text: '백업 파일' }), fileIn),
+        h('div', { class: 'field full' }, h('label', { for: 'i-code', text: '현장 비밀번호' }), codeIn)),
+      info,
+      h('div', { class: 'form-actions' }, h('button', { class: 'btn', type: 'button', onclick: closeLayer, text: '취소' }), h('button', { class: 'btn primary', type: 'submit', id: 'i-save', text: '가져오기' })));
+    form.addEventListener('submit', async (evt) => {
+      evt.preventDefault();
+      if (!parsed) { info.textContent = '백업 파일을 골라 주세요.'; return; }
+      const code = codeIn.value.trim();
+      if (!code) { info.textContent = '현장 비밀번호를 정해 주세요.'; return; }
+      $('i-save').disabled = true; info.textContent = '가져오는 중…';
+      try {
+        const d = await api('importEvent', { admin: adminCode, passcode: code, event: parsed.event, rows: parsed.rows });
+        store.set('rm.code.' + d.event.id, code);
+        closeLayer(); toast(`${d.event.name}: 업체 ${d.count}곳을 가져왔습니다.`);
+        await loadEvents(); go(d.event.id);
+      } catch (er) { $('i-save').disabled = false; info.textContent = er.message; }
+    });
+    openLayer(form);
+  }
+
+  // ---------- paste from Excel ----------
+  function parseTSV(text) {
+    const out = []; let row = [], cell = '', q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) {
+        if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+        else if (c === '"') q = false;
+        else cell += c;
+      } else if (c === '"' && cell === '') q = true;
+      else if (c === '\t') { row.push(cell); cell = ''; }
+      else if (c === '\n' || c === '\r') {
+        if (c === '\r' && text[i + 1] === '\n') i++;
+        row.push(cell); out.push(row); row = []; cell = '';
+      } else cell += c;
+    }
+    if (cell !== '' || row.length) { row.push(cell); out.push(row); }
+    return out.filter((r) => r.some((c) => c.trim() !== ''));
+  }
+  function fieldFor(header) {
+    const x = String(header || '').replace(/\s+/g, '').toLowerCase();
+    if (!x) return null;
+    let m;
+    if (x.includes('스태프')) return 'staff';
+    if (x === '담당자' || x.includes('수령')) return 'contact';
+    if (x.includes('부스')) return 'booth';
+    if (x.includes('업체')) return 'company';
+    if (x === '직위') return 'title';
+    if (x.includes('휴대폰') || x === '연락처' || x === '전화번호') return 'phone';
+    if (x.includes('mail') || x.includes('메일')) return 'email';
+    if (x.includes('사전')) return 'pre';
+    if (x.includes('현장') || x.startsWith('추가')) return 'onsite';
+    if (x.includes('리더기번호')) return 'readers';
+    if (x === '교체' || x.startsWith('교체전')) return 'replaced';
+    if (x.includes('반납')) return 'returned';
+    if ((m = x.match(/^(\d{1,2})일차$/)) && +m[1] >= 1 && +m[1] <= MAX_DAYS) return 'day' + (+m[1] - 1);
+    if (x === '비고') return 'note';
+    return null;
+  }
+  function openPaste() {
+    const e = event; if (!e) return;
+    const ta = h('textarea', { id: 'p-text', placeholder: '엑셀에서 머리글 행(부스번호, 업체명, 담당자 …)을 포함해 복사한 뒤 여기에 붙여넣으세요.' });
+    const info = h('div', { class: 'hint' });
+    const prev = h('div', { class: 'preview', hidden: true });
+    const go2 = h('button', { class: 'btn primary', type: 'button', disabled: true, text: '추가하기' });
+    let parsed = [];
+    function analyse() {
+      const grid = parseTSV(ta.value);
+      parsed = []; prev.hidden = true; go2.disabled = true;
+      if (!grid.length) { info.textContent = ''; return; }
+      const hi = grid.findIndex((r) => r.some((c) => fieldFor(c) === 'company'));
+      if (hi < 0) { info.textContent = '머리글 행을 찾지 못했습니다. ‘업체명’ 칸이 있는 머리글 행까지 함께 복사해 주세요.'; return; }
+      const map = grid[hi].map(fieldFor);
+      const used = [...new Set(map.filter(Boolean))];
+      for (const r of grid.slice(hi + 1)) {
+        const o = { days: [] };
+        map.forEach((k, i) => {
+          if (!k) return;
+          const v = (r[i] || '').trim();
+          if (k.startsWith('day')) o.days[+k.slice(3)] = v;
+          else o[k] = v;
+        });
+        if (!o.company) continue;
+        parsed.push({
+          staff: o.staff || '', booth: o.booth || '', company: o.company, contact: o.contact || '', title: o.title || '',
+          phone: o.phone || '', email: (o.email || '').replace(/\n/g, ' / '), pre: int(o.pre), onsite: int(o.onsite),
+          readers: parseList(o.readers), replaced: parseList(o.replaced),
+          days: Array.from({ length: o.days.length }, (_, i) => o.days[i] || ''),
+          returned: int(o.returned), note: o.note || '',
+        });
+      }
+      const labels = { staff: '담당 스태프', booth: '부스', company: '업체명', contact: '담당자', title: '직위', phone: '휴대폰', email: 'E-mail', pre: '사전 신청', onsite: '추가+현장', readers: '리더기 번호', replaced: '교체', returned: '반납', note: '비고' };
+      info.textContent = parsed.length
+        ? `${parsed.length}개 업체를 찾았습니다. 읽은 칸: ${used.map((k) => labels[k] || `${+k.slice(3) + 1}일차`).join(', ')}`
+        : '업체명이 있는 행이 없습니다.';
+      if (parsed.length) {
+        prev.hidden = false; go2.disabled = false;
+        prev.replaceChildren(h('table', null,
+          h('thead', null, h('tr', null, ['부스', '업체명', '담당자', '신청', '리더기 번호'].map((t) => h('th', { text: t })))),
+          h('tbody', null, parsed.slice(0, 8).map((p) => h('tr', null, h('td', { text: p.booth }), h('td', { text: p.company }), h('td', { text: p.contact }), h('td', { text: String(p.pre + p.onsite) }), h('td', { text: p.readers.join(', ') })))),
+          parsed.length > 8 ? h('tfoot', null, h('tr', null, h('td', { colspan: '5', class: 'muted', text: `외 ${parsed.length - 8}곳` }))) : null));
+      }
+    }
+    ta.addEventListener('input', analyse);
+    go2.addEventListener('click', async () => {
+      go2.disabled = true; ta.disabled = true; go2.textContent = '추가하는 중…';
+      try {
+        const d = await api('addRows', { ...authFor(e.id), rows: parsed });
+        rows = rows.concat(d.rows || []);
+        closeLayer(); renderEvent(); toast(`${(d.rows || []).length}개 업체를 추가했습니다.`);
+      } catch (er) { go2.disabled = false; ta.disabled = false; go2.textContent = '추가하기'; info.textContent = er.message; }
+    });
+    const modal = h('div', { class: 'modal', role: 'dialog', 'aria-label': '엑셀에서 붙여넣기' },
+      h('h2', { text: '엑셀에서 붙여넣기' }),
+      h('p', { class: 'sub', style: 'margin-bottom:12px', text: '리더기 시트나 발주 리스트를 머리글 행까지 선택해 복사(Ctrl+C)한 뒤 붙여넣으세요. 머리글 이름으로 칸을 찾아 넣습니다.' }),
+      ta, info, prev,
+      h('div', { class: 'form-actions' }, h('button', { class: 'btn', type: 'button', onclick: closeLayer, text: '취소' }), go2));
+    openLayer(modal);
+  }
+
+  // ---------- export ----------
+  function exportCSV() {
+    const e = event; if (!e) return;
+    const days = Math.max(1, int(e.days) || 1);
+    const head = ['No.', '반납', '담당 스태프', '부스번호', '업체명', '담당자', '직위', '휴대폰번호', 'E-mail', '사전 신청', '추가+현장', '리더기 번호', '합계', '교체 전 리더기', '데이터 추출 리더기', '데이터 대수', ...Array.from({ length: days }, (_, d) => `${d + 1}일차`), '비고', '상태'];
+    const esc = (v) => { const s = String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+    const lines = [head, ...rows.slice().sort(naturalBooth).map((r, i) => [i + 1, int(r.returned), r.staff, r.booth, r.company, r.contact, r.title, r.phone, r.email, int(r.pre) || '', int(r.onsite) || '', (r.readers || []).join(', '), qtyOf(r), (r.replaced || []).join(', '), [...(r.readers || []), ...(r.replaced || [])].join(', '), (r.readers || []).length + (r.replaced || []).length, ...Array.from({ length: days }, (_, d) => (r.days || [])[d] || ''), r.note, STATUS[statusOf(r)].label])];
+    download(`${e.name || '행사'}_리더기.csv`, '﻿' + lines.map((l) => l.map(esc).join(',')).join('\r\n'), 'text/csv;charset=utf-8');
+  }
+  function exportJSON() {
+    const e = event; if (!e) return;
+    const { id, floorplans, updatedAt, ...meta } = e;
+    const clean = rows.map(({ id: _i, eventId, updatedAt: _u, ...r }) => r);
+    download(`${e.name || '행사'}_백업.json`, JSON.stringify({ event: meta, rows: clean }, null, 1), 'application/json');
+  }
+
+  // ---------- wiring ----------
+  $('brand').addEventListener('click', () => go(null));
+  $('adminBtn').addEventListener('click', openAdminLogin);
+  $('newEventBtn').addEventListener('click', openNewEvent);
+  $('importBtn').addEventListener('click', openImport);
+  $('addRowBtn').addEventListener('click', () => openRow(null));
+  $('pasteBtn').addEventListener('click', openPaste);
+  $('exportBtn').addEventListener('click', exportCSV);
+  $('backupBtn').addEventListener('click', exportJSON);
+  $('refreshBtn').addEventListener('click', () => openEvent(true).then(() => toast('최신 내용으로 새로 고쳤습니다.')));
+  $('q').addEventListener('input', () => { if (event) renderList(event); });
+  $('staffFilter').addEventListener('change', () => { if (event) renderList(event); });
+  for (const t of document.querySelectorAll('.tab')) t.addEventListener('click', () => setTab(t.dataset.tab));
+  $('gateForm').addEventListener('submit', async (evt) => {
+    evt.preventDefault();
+    const code = $('gateCode').value.trim();
+    if (!code || !current) return;
+    $('gateBtn').disabled = true; $('gateErr').textContent = '';
+    try {
+      await api('load', { eventId: current, code });
+      store.set('rm.code.' + current, code);
+      await openEvent();
+    } catch (er) { $('gateErr').textContent = er.code === 'unauthorized' ? '비밀번호가 맞지 않습니다.' : er.message; }
+    finally { $('gateBtn').disabled = false; }
+  });
+  // 다른 스태프가 입력한 내용을 주기적으로 불러옵니다(편집 중에는 쉼).
+  setInterval(() => {
+    if (current && event && document.visibilityState === 'visible' && !layerOpen()) openEvent(true);
+  }, POLL_MS);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && current && event && !layerOpen() && Date.now() - lastSync > 10000) openEvent(true);
+  });
+
+  // ---------- boot ----------
+  applyRole();
+  if (!API_URL || API_URL.startsWith('__')) {
+    $('adminBtn').hidden = true;
+    $('homeEmpty').replaceChildren(h('h3', { text: '아직 서버가 연결되지 않았습니다' }),
+      h('p', { text: '구글 시트에 Apps Script를 배포한 뒤, 받은 웹 앱 주소를 이 페이지에 연결하면 사용할 수 있습니다.' }));
+    return;
+  }
+  const want = store.get('rm.event');
+  loadEvents().then(() => { if (want && events.some((e) => e.id === want)) go(want); });
+})();
+</script>
+
+</body>
+</html>
