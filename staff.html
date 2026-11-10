@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#1d2b4f">
+  <title>스태프 교육·공지 | 등록대 운영 안내</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    :root {
+      --navy: #1d2b4f;
+      --accent: #2f5bd3;
+      --red: #d23a3a;
+      --red-bg: #fdf0f0;
+      --amber-bg: #fff7e6;
+      --amber: #9a5b00;
+      --ink: #1f2430;
+      --muted: #687082;
+      --line: #e3e6ee;
+      --soft: #f3f5fa;
+      --bg: #eef1f7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 64px; }
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      word-break: keep-all;
+    }
+    .wrap { max-width: 560px; margin: 0 auto; background: var(--bg); min-height: 100vh; }
+
+    header {
+      background: var(--navy);
+      color: #fff;
+      padding: 32px 20px 26px;
+    }
+    header .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; opacity: .7; }
+    header h1 { font-size: 26px; font-weight: 800; letter-spacing: -.03em; line-height: 1.3; margin-top: 6px; }
+    header .hours {
+      margin-top: 18px; padding: 14px 16px;
+      background: rgba(255,255,255,.1); border-radius: 12px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    header .hours small { display: block; font-size: 12px; opacity: .75; }
+    header .hours strong { font-size: 18px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+    header .badge {
+      font-size: 13px; font-weight: 700; color: #fff;
+      background: var(--red); padding: 6px 10px; border-radius: 999px; white-space: nowrap;
+    }
+
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(238,241,247,.94);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+      padding: 10px 16px;
+    }
+    nav::-webkit-scrollbar { display: none; }
+    nav a {
+      display: inline-block; margin-right: 6px;
+      padding: 7px 13px; border-radius: 999px;
+      background: #fff; border: 1px solid var(--line);
+      color: var(--navy); font-size: 14px; font-weight: 600; text-decoration: none;
+    }
+    nav a:active { background: var(--soft); }
+
+    main { padding: 16px 16px 40px; display: grid; gap: 14px; }
+    section {
+      background: #fff; border-radius: 16px; padding: 20px 18px;
+      border: 1px solid var(--line);
+    }
+    h2 {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--navy);
+      margin-bottom: 14px;
+    }
+    h2 .num {
+      flex: none; width: 24px; height: 24px; border-radius: 7px;
+      background: var(--navy); color: #fff; font-size: 13px;
+      display: grid; place-items: center;
+    }
+    h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    p, li { font-size: 15px; }
+    .muted { color: var(--muted); font-size: 14px; }
+
+    .alert {
+      border-radius: 12px; padding: 12px 14px; font-size: 15px; font-weight: 600;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .alert::before { content: "!"; flex: none; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800; margin-top: 2px; }
+    .alert.red { background: var(--red-bg); color: #8f1f1f; }
+    .alert.red::before { background: var(--red); color: #fff; }
+    .alert.amber { background: var(--amber-bg); color: var(--amber); }
+    .alert.amber::before { background: #e59b00; color: #fff; }
+    .stack { display: grid; gap: 10px; }
+
+    .card { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .card .tag {
+      display: inline-block; font-size: 12px; font-weight: 700;
+      padding: 3px 8px; border-radius: 6px; margin-bottom: 8px;
+      background: var(--soft); color: var(--accent);
+    }
+    .steps { list-style: none; display: grid; gap: 6px; counter-reset: s; }
+    .steps li { position: relative; padding-left: 26px; counter-increment: s; }
+    .steps li::before {
+      content: counter(s); position: absolute; left: 0; top: 3px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
+      display: grid; place-items: center;
+    }
+    mark { background: #ffe9a8; color: inherit; padding: 0 3px; border-radius: 3px; font-weight: 700; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { padding: 11px 6px; border-bottom: 1px solid var(--line); text-align: left; }
+    tr:last-child td { border-bottom: 0; }
+    td.price { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    td.price span { font-weight: 500; color: var(--muted); font-size: 13px; margin-left: 2px; }
+    tr.hl td { background: #f2f6ff; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chips span {
+      font-size: 14px; padding: 6px 10px; border-radius: 8px;
+      background: var(--soft); border: 1px solid var(--line);
+    }
+
+    .targets { display: grid; gap: 8px; }
+    .target {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 12px; border-radius: 10px; font-size: 15px;
+    }
+    .target b { font-weight: 800; }
+    .target .mk { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+    .target.yes { background: #eaf6ee; color: #1c5b33; }
+    .target.yes .mk { background: #2f9a58; color: #fff; }
+    .target.no { background: #f4f4f6; color: #555b66; }
+    .target.no .mk { background: #a1a6b0; color: #fff; }
+    .target.vip { background: #f4effc; color: #4d2f86; }
+    .target.vip .mk { background: #7a52c7; color: #fff; }
+
+    .linkbtn {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; border-radius: 12px;
+      background: var(--navy); color: #fff; text-decoration: none;
+      font-size: 16px; font-weight: 700;
+    }
+    .linkbtn:active { filter: brightness(.92); }
+
+    h2 .date { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: auto; }
+    .timeline { list-style: none; display: grid; gap: 8px; }
+    .timeline li {
+      display: grid; grid-template-columns: 52px 1fr; gap: 12px;
+      padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+      border-left: 4px solid #b9c3d9;
+    }
+    .timeline li.main { border-left-color: var(--navy); background: #f6f8fc; }
+    .timeline li.meal { border-left-color: #e59b00; }
+    .timeline li.vip { border-left-color: #7a52c7; }
+    .timeline .time { font-size: 14px; font-weight: 800; line-height: 1.35; color: var(--navy); font-variant-numeric: tabular-nums; }
+    .timeline .kind { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .timeline .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; font-size: 14px; padding: 3px 0; }
+    .timeline .row + .row { border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 3px; }
+    .timeline .row em { font-style: normal; color: var(--muted); font-size: 13px; }
+    .timeline .row a { color: var(--accent); }
+    .timeline .place {
+      flex: none; font-size: 12px; font-weight: 700; color: var(--accent);
+      background: #eef3ff; padding: 3px 7px; border-radius: 6px; white-space: nowrap;
+    }
+
+    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 0 16px 32px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+
+    @media print {
+      nav { display: none; }
+      body, .wrap { background: #fff; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">STAFF BRIEFING</p>
+      <h1>스태프 교육·공지<br>등록대 운영 안내</h1>
+      <div class="hours">
+        <div>
+          <small>등록대 운영시간</small>
+          <strong>11월 13일(금) 09:00 – 17:00</strong>
+        </div>
+        <span class="badge">명찰 대리수령 불가</span>
+      </div>
+    </header>
+
+    <nav aria-label="바로가기">
+      <a href="#onsite">현장등록</a>
+      <a href="#fee">등록비</a>
+      <a href="#active">현역 제외대상</a>
+      <a href="#special">특별회원사</a>
+      <a href="#gift">기념품</a>
+      <a href="#lunch">중식쿠폰</a>
+      <a href="#program">행사일정</a>
+    </nav>
+
+    <main>
+      <section id="onsite">
+        <h2><span class="num">1</span>현장등록</h2>
+        <div class="stack">
+          <div class="card">
+            <span class="tag">종이등록</span>
+            <ol class="steps">
+              <li>현장등록지 + 영수증을 <mark>스테이플러로 함께 찍기</mark></li>
+              <li>등록대에 보관</li>
+            </ol>
+          </div>
+          <div class="card">
+            <span class="tag">모바일등록</span>
+            <ol class="steps">
+              <li>영수증에 <mark>이름 + 연락처 뒷자리</mark> 기재</li>
+              <li>등록대에 보관</li>
+            </ol>
+          </div>
+          <div class="alert red">등록비와 가입비(회비)는 반드시 나누어 결제하고, 영수증도 따로 나누어 주세요.</div>
+          <div class="alert amber">현장에서 가입비(회비)를 납부하면 등록비는 정회원가(170,000원)로 결제합니다.</div>
+        </div>
+      </section>
+
+      <section id="fee">
+        <h2><span class="num">2</span>등록비</h2>
+        <table>
+          <tbody>
+            <tr><td>정회원</td><td class="price">170,000<span>원</span></td></tr>
+            <tr><td>비회원</td><td class="price">200,000<span>원</span></td></tr>
+            <tr><td>특별회원사 회원</td><td class="price">170,000<span>원</span></td></tr>
+            <tr><td>학생회원</td><td class="price">130,000<span>원</span></td></tr>
+            <tr class="hl"><td>현역</td><td class="price">60,000<span>원</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="active">
+        <h2><span class="num">3</span>현역 제외대상</h2>
+        <p class="muted" style="margin-bottom:10px">아래 소속은 현역 등록비(60,000원) 적용 대상이 아닙니다.</p>
+        <div class="chips">
+          <span>ADD</span><span>군무원</span><span>공무원</span><span>국방부</span>
+          <span>방위사업청</span><span>위탁교육생(근무자)</span><span>사관학교</span><span>등</span>
+        </div>
+      </section>
+
+      <section id="special">
+        <h2><span class="num">4</span>특별회원사</h2>
+        <p class="muted" style="margin-bottom:10px">소속 회원은 170,000원 적용</p>
+        <div class="chips">
+          <span>단암시스템즈(주)</span>
+          <span>(주)대한항공</span>
+          <span>(주)모아소프트</span>
+          <span>아이쓰리시스템(주)</span>
+          <span>퍼스텍(주)</span>
+          <span>(주)풍산</span>
+          <span>한화시스템(주)</span>
+          <span>한화에어로스페이스(주)</span>
+          <span>한국항공우주산업(주)</span>
+          <span>(주)현대로템</span>
+          <span>LIG D&amp;A</span>
+        </div>
+      </section>
+
+      <section id="gift">
+        <h2><span class="num">5</span>기프티콘(기념품) 발송 대상</h2>
+        <div class="targets">
+          <div class="target yes"><span class="mk">O</span><span><b>ATTENDEE</b> — 발송 대상</span></div>
+          <div class="target no"><span class="mk">X</span><span>ATTENDEE 중 <b>현역 등록자</b></span></div>
+          <div class="target no"><span class="mk">X</span><span><b>EXHIBITOR</b></span></div>
+          <div class="target no"><span class="mk">X</span><span><b>STAFF</b></span></div>
+          <div class="target vip"><span class="mk">★</span><span><b>VIP</b> — 별도 기념품 있음</span></div>
+        </div>
+      </section>
+
+      <section id="lunch">
+        <h2><span class="num">6</span>중식쿠폰</h2>
+        <div class="stack">
+          <p>중식쿠폰은 <b>수령처에서 교환</b>합니다.</p>
+          <div class="alert red">중복수령 불가</div>
+        </div>
+      </section>
+
+      <section id="program">
+        <h2><span class="num">7</span>행사일정 <small class="date">11월 13일(금)</small></h2>
+        <p class="muted" style="margin-bottom:12px">참가자가 세션·장소를 물어보면 아래 일정표로 안내하세요.</p>
+        <ol class="timeline">
+          <li>
+            <div class="time">09:00<br>17:00</div>
+            <div class="body">
+              <p class="kind">등록</p>
+              <div class="row"><span>사전 및 현장 등록 접수</span><span class="place">등록대, 1층 로비</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="time">09:00<br>12:00</div>
+            <div class="body">
+              <p class="kind">학술발표 (오전)</p>
+              <div class="row"><span>7개 체계분과 논문발표 (구두·포스터)</span><span class="place">1·2층 중회의장</span></div>
+              <div class="row"><span>특별세션 Ⅰ</span><span class="place">DCC 101호</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="time">10:00<br>11:30</div>
+            <div class="body">
+              <p class="kind">국방과학기술 전략포럼</p>
+              <div class="row"><span>주제발표: K-방산의 새로운 성장동력<br><em>강은호 前방위사업청장</em><br>패널토의</span><span class="place">DCC 201호</span></div>
+            </div>
+          </li>
+          <li class="vip">
+            <div class="time">11:30<br>13:00</div>
+            <div class="body">
+              <p class="kind">VIP 오찬</p>
+              <div class="row"><span>주요인사 환담, 오찬</span><span class="place">DCC 204·205호</span></div>
+            </div>
+          </li>
+          <li class="meal">
+            <div class="time">12:00<br>13:00</div>
+            <div class="body">
+              <p class="kind">참가자 중식</p>
+              <div class="row"><span>행사참가자 중식 · <a href="#lunch">중식쿠폰 안내</a></span><span class="place">외부 식당</span></div>
+            </div>
+          </li>
+          <li class="main">
+            <div class="time">13:00<br>13:30</div>
+            <div class="body">
+              <p class="kind">개회식</p>
+              <div class="row"><span>개회선언 · 대회사 · 환영사 · 축사</span><span class="place">DCC 201호</span></div>
+            </div>
+          </li>
+          <li class="main">
+            <div class="time">13:30<br>14:00</div>
+            <div class="body">
+              <p class="kind">기조강연</p>
+              <div class="row"><span>현대전의 교훈과 미래전의 진화: 항공우주 무기체계<br><em>유창경 항공우주산학융합원장 (인하대학교 교수)</em></span><span class="place">DCC 201호</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="time">14:00<br>17:40</div>
+            <div class="body">
+              <p class="kind">학술발표 (오후)</p>
+              <div class="row"><span>7개 체계분과 논문발표 (구두·포스터)</span><span class="place">1·2층 중회의장</span></div>
+              <div class="row"><span>특별세션 Ⅰ</span><span class="place">DCC 101호</span></div>
+              <div class="row"><span>특별세션 Ⅱ</span><span class="place">DCC 102호</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="time">14:30<br>17:00</div>
+            <div class="body">
+              <p class="kind">특별심포지엄</p>
+              <div class="row"><span>차세대전투기 및 전투기협업 무인전투기(CCA)의 개발과 전투기-CCA 연계·통합 방향</span><span class="place">DCC 201호</span></div>
+            </div>
+          </li>
+        </ol>
+        <a class="linkbtn" style="margin-top:14px" href="https://conference.kimst.or.kr/program/index.kin?gubun=1&amp;sgubun=1&amp;event=16" target="_blank" rel="noopener">공식 프로그램 페이지 <span aria-hidden="true">›</span></a>
+      </section>
+    </main>
+
+    <footer>스태프 내부 공유용 페이지입니다.</footer>
+  </div>
+</body>
+</html>
