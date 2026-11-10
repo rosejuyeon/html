@@ -46,6 +46,14 @@
     }
     header .hours small { display: block; font-size: 12px; opacity: .75; }
     header .hours strong { font-size: 18px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+    header .contact {
+      margin-top: 10px; padding: 12px 16px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px 12px; flex-wrap: wrap;
+      background: #fff; color: var(--navy); text-decoration: none;
+    }
+    header .contact span { font-size: 13px; font-weight: 700; color: var(--red); }
+    header .contact b { font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    header .contact:active { filter: brightness(.94); }
     header .badge {
       font-size: 13px; font-weight: 700; color: #fff;
       background: var(--red); padding: 6px 10px; border-radius: 999px; white-space: nowrap;
@@ -189,6 +197,7 @@
         </div>
         <span class="badge">명찰 대리수령 불가</span>
       </div>
+      <a class="contact" href="tel:01085635174"><span>긴급 연락처</span><b>안주연 선임매니저 010-8563-5174</b></a>
     </header>
 
     <nav aria-label="바로가기">
