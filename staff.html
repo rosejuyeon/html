@@ -138,8 +138,7 @@
     .target.yes .mk { background: #2f9a58; color: #fff; }
     .target.no { background: #f4f4f6; color: #555b66; }
     .target.no .mk { background: #a1a6b0; color: #fff; }
-    .target.vip { background: #f4effc; color: #4d2f86; }
-    .target.vip .mk { background: #7a52c7; color: #fff; }
+    .target .note { display: block; font-size: 13px; font-weight: 600; opacity: .85; }
 
     .linkbtn {
       display: flex; align-items: center; justify-content: space-between;
@@ -269,11 +268,9 @@
       <section id="gift">
         <h2><span class="num">5</span>기프티콘(기념품) 발송 대상</h2>
         <div class="targets">
-          <div class="target yes"><span class="mk">O</span><span><b>ATTENDEE</b> — 발송 대상</span></div>
-          <div class="target no"><span class="mk">X</span><span>ATTENDEE 중 <b>현역 등록자</b></span></div>
+          <div class="target yes"><span class="mk">O</span><span><b>ATTENDEE</b> — 발송 대상 <small class="note">*현역 등록자는 제외</small></span></div>
           <div class="target no"><span class="mk">X</span><span><b>EXHIBITOR</b></span></div>
           <div class="target no"><span class="mk">X</span><span><b>STAFF</b></span></div>
-          <div class="target vip"><span class="mk">★</span><span><b>VIP</b> — 별도 기념품 있음</span></div>
         </div>
       </section>
 
