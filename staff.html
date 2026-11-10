@@ -149,6 +149,27 @@
     }
     .linkbtn:active { filter: brightness(.92); }
 
+    h2 .date { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: auto; }
+    .timeline { list-style: none; display: grid; gap: 8px; }
+    .timeline li {
+      display: grid; grid-template-columns: 52px 1fr; gap: 12px;
+      padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+      border-left: 4px solid #b9c3d9;
+    }
+    .timeline li.main { border-left-color: var(--navy); background: #f6f8fc; }
+    .timeline li.meal { border-left-color: #e59b00; }
+    .timeline li.vip { border-left-color: #7a52c7; }
+    .timeline .time { font-size: 14px; font-weight: 800; line-height: 1.35; color: var(--navy); font-variant-numeric: tabular-nums; }
+    .timeline .kind { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .timeline .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; font-size: 14px; padding: 3px 0; }
+    .timeline .row + .row { border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 3px; }
+    .timeline .row em { font-style: normal; color: var(--muted); font-size: 13px; }
+    .timeline .row a { color: var(--accent); }
+    .timeline .place {
+      flex: none; font-size: 12px; font-weight: 700; color: var(--accent);
+      background: #eef3ff; padding: 3px 7px; border-radius: 6px; white-space: nowrap;
+    }
+
     footer { text-align: center; color: var(--muted); font-size: 12px; padding: 0 16px 32px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
 
     @media print {
@@ -179,7 +200,7 @@
       <a href="#special">특별회원사</a>
       <a href="#gift">기념품</a>
       <a href="#lunch">중식쿠폰</a>
-      <a href="#program">프로그램</a>
+      <a href="#program">행사일정</a>
     </nav>
 
     <main>
@@ -265,9 +286,77 @@
       </section>
 
       <section id="program">
-        <h2><span class="num">7</span>프로그램</h2>
-        <p class="muted" style="margin-bottom:12px">세션·장소 문의 시 아래 공식 프로그램 페이지를 확인하세요.</p>
-        <a class="linkbtn" href="https://conference.kimst.or.kr/program/index.kin?gubun=1&amp;sgubun=1&amp;event=16" target="_blank" rel="noopener">프로그램 보기 <span aria-hidden="true">›</span></a>
+        <h2><span class="num">7</span>행사일정 <small class="date">11월 13일(금)</small></h2>
+        <p class="muted" style="margin-bottom:12px">참가자가 세션·장소를 물어보면 아래 일정표로 안내하세요.</p>
+        <ol class="timeline">
+          <li>
+            <div class="time">09:00<br>17:00</div>
+            <div class="body">
+              <p class="kind">등록</p>
+              <div class="row"><span>사전 및 현장 등록 접수</span><span class="place">등록대, 1층 로비</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="time">09:00<br>12:00</div>
+            <div class="body">
+              <p class="kind">학술발표 (오전)</p>
+              <div class="row"><span>7개 체계분과 논문발표 (구두·포스터)</span><span class="place">1·2층 중회의장</span></div>
+              <div class="row"><span>특별세션 Ⅰ</span><span class="place">DCC 101호</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="time">10:00<br>11:30</div>
+            <div class="body">
+              <p class="kind">국방과학기술 전략포럼</p>
+              <div class="row"><span>주제발표: K-방산의 새로운 성장동력<br><em>강은호 前방위사업청장</em><br>패널토의</span><span class="place">DCC 201호</span></div>
+            </div>
+          </li>
+          <li class="vip">
+            <div class="time">11:30<br>13:00</div>
+            <div class="body">
+              <p class="kind">VIP 오찬</p>
+              <div class="row"><span>주요인사 환담, 오찬</span><span class="place">DCC 204·205호</span></div>
+            </div>
+          </li>
+          <li class="meal">
+            <div class="time">12:00<br>13:00</div>
+            <div class="body">
+              <p class="kind">참가자 중식</p>
+              <div class="row"><span>행사참가자 중식 · <a href="#lunch">중식쿠폰 안내</a></span><span class="place">외부 식당</span></div>
+            </div>
+          </li>
+          <li class="main">
+            <div class="time">13:00<br>13:30</div>
+            <div class="body">
+              <p class="kind">개회식</p>
+              <div class="row"><span>개회선언 · 대회사 · 환영사 · 축사</span><span class="place">DCC 201호</span></div>
+            </div>
+          </li>
+          <li class="main">
+            <div class="time">13:30<br>14:00</div>
+            <div class="body">
+              <p class="kind">기조강연</p>
+              <div class="row"><span>현대전의 교훈과 미래전의 진화: 항공우주 무기체계<br><em>유창경 항공우주산학융합원장 (인하대학교 교수)</em></span><span class="place">DCC 201호</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="time">14:00<br>17:40</div>
+            <div class="body">
+              <p class="kind">학술발표 (오후)</p>
+              <div class="row"><span>7개 체계분과 논문발표 (구두·포스터)</span><span class="place">1·2층 중회의장</span></div>
+              <div class="row"><span>특별세션 Ⅰ</span><span class="place">DCC 101호</span></div>
+              <div class="row"><span>특별세션 Ⅱ</span><span class="place">DCC 102호</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="time">14:30<br>17:00</div>
+            <div class="body">
+              <p class="kind">특별심포지엄</p>
+              <div class="row"><span>차세대전투기 및 전투기협업 무인전투기(CCA)의 개발과 전투기-CCA 연계·통합 방향</span><span class="place">DCC 201호</span></div>
+            </div>
+          </li>
+        </ol>
+        <a class="linkbtn" style="margin-top:14px" href="https://conference.kimst.or.kr/program/index.kin?gubun=1&amp;sgubun=1&amp;event=16" target="_blank" rel="noopener">공식 프로그램 페이지 <span aria-hidden="true">›</span></a>
       </section>
     </main>
 
