@@ -104,6 +104,8 @@
     .alert.red::before { background: var(--red); color: #fff; }
     .alert.amber { background: var(--amber-bg); color: var(--amber); }
     .alert.amber::before { background: #e59b00; color: #fff; }
+    .alert b { font-size: 17px; font-weight: 800; }
+    .alert small { font-size: 13px; font-weight: 500; }
     .stack { display: grid; gap: 10px; }
 
     .card { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
@@ -193,7 +195,7 @@
       <div class="hours">
         <div>
           <small>등록대 운영시간</small>
-          <strong>11월 13일(금) 09:00 – 17:00</strong>
+          <strong>11월 13일(금) 08:00 – 17:00</strong>
         </div>
         <span class="badge">명찰 대리수령 불가</span>
       </div>
@@ -228,6 +230,7 @@
               <li>등록대에 보관</li>
             </ol>
           </div>
+          <div class="alert red"><span><b>분할결제 절대 불가</b><br>한 건의 금액을 여러 카드나 여러 번으로 쪼개서 결제할 수 없습니다.<br><small>※ 아래 등록비·가입비 분리 결제와는 별개입니다.</small></span></div>
           <div class="alert red">등록비와 가입비(회비)는 반드시 나누어 결제하고, 영수증도 따로 나누어 주세요.</div>
           <div class="alert amber">현장에서 가입비(회비)를 납부하면 등록비는 정회원가(170,000원)로 결제합니다.</div>
         </div>
@@ -295,7 +298,7 @@
         <p class="muted" style="margin-bottom:12px">참가자가 세션·장소를 물어보면 아래 일정표로 안내하세요.</p>
         <ol class="timeline">
           <li>
-            <div class="time">09:00<br>17:00</div>
+            <div class="time">08:00<br>17:00</div>
             <div class="body">
               <p class="kind">등록</p>
               <div class="row"><span>사전 및 현장 등록 접수</span><span class="place">등록대, 1층 로비</span></div>
