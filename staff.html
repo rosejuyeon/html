@@ -179,6 +179,12 @@
       background: #eef3ff; padding: 3px 7px; border-radius: 6px; white-space: nowrap;
     }
 
+    .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .shots figure { margin: 0; }
+    .shots a { display: block; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--soft); }
+    .shots img { display: block; width: 100%; height: auto; }
+    .shots figcaption { margin-top: 6px; font-size: 13px; color: var(--muted); line-height: 1.4; }
+    .shots figcaption b { display: block; font-size: 14px; color: var(--ink); }
     footer { text-align: center; color: var(--muted); font-size: 12px; padding: 0 16px 32px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
 
     @media print {
@@ -204,6 +210,7 @@
 
     <nav aria-label="바로가기">
       <a href="#onsite">현장등록</a>
+      <a href="#screens">화면 예시</a>
       <a href="#fee">등록비</a>
       <a href="#active">현역 제외대상</a>
       <a href="#special">특별회원사</a>
@@ -236,8 +243,31 @@
         </div>
       </section>
 
+      <section id="screens">
+        <h2><span class="num">2</span>참가자 화면 예시</h2>
+        <p class="muted" style="margin-bottom:12px">참가자가 보여주는 화면을 미리 확인해 두세요. 이미지를 누르면 크게 볼 수 있습니다.</p>
+        <div class="shots">
+          <figure>
+            <a href="images/qr-preregistered.webp" target="_blank" rel="noopener"><img src="images/qr-preregistered.webp" alt="사전등록자 QR 화면 (파란색)" loading="lazy"></a>
+            <figcaption><b>사전등록자 QR</b>파란 화면</figcaption>
+          </figure>
+          <figure>
+            <a href="images/qr-onsite-mobile.webp" target="_blank" rel="noopener"><img src="images/qr-onsite-mobile.webp" alt="모바일 현장등록자 QR 화면 (검정색)" loading="lazy"></a>
+            <figcaption><b>모바일 현장등록자 QR</b>검정 화면</figcaption>
+          </figure>
+          <figure>
+            <a href="images/checkin-message.webp" target="_blank" rel="noopener"><img src="images/checkin-message.webp" alt="명찰 발급자에게 발송되는 체크인 안내 알림톡" loading="lazy"></a>
+            <figcaption><b>체크인 안내 문자</b>명찰 발급 시 발송</figcaption>
+          </figure>
+          <figure>
+            <a href="images/gifticon.webp" target="_blank" rel="noopener"><img src="images/gifticon.webp" alt="기프티콘 대상자가 받는 카카오 선물하기 화면" loading="lazy"></a>
+            <figcaption><b>기프티콘 수령 화면</b>기프티콘 대상자</figcaption>
+          </figure>
+        </div>
+      </section>
+
       <section id="fee">
-        <h2><span class="num">2</span>등록비</h2>
+        <h2><span class="num">3</span>등록비</h2>
         <table>
           <tbody>
             <tr><td>정회원</td><td class="price">170,000<span>원</span></td></tr>
@@ -250,7 +280,7 @@
       </section>
 
       <section id="active">
-        <h2><span class="num">3</span>현역 제외대상</h2>
+        <h2><span class="num">4</span>현역 제외대상</h2>
         <p class="muted" style="margin-bottom:10px">아래 소속은 현역 등록비(60,000원) 적용 대상이 아닙니다.</p>
         <div class="chips">
           <span>ADD</span><span>군무원</span><span>공무원</span><span>국방부</span>
@@ -259,7 +289,7 @@
       </section>
 
       <section id="special">
-        <h2><span class="num">4</span>특별회원사</h2>
+        <h2><span class="num">5</span>특별회원사</h2>
         <p class="muted" style="margin-bottom:10px">소속 회원은 170,000원 적용</p>
         <div class="chips">
           <span>단암시스템즈(주)</span>
@@ -277,7 +307,7 @@
       </section>
 
       <section id="gift">
-        <h2><span class="num">5</span>기프티콘(기념품) 발송 대상</h2>
+        <h2><span class="num">6</span>기프티콘(기념품) 발송 대상</h2>
         <div class="targets">
           <div class="target yes"><span class="mk">O</span><span><b>ATTENDEE</b> — 발송 대상 <small class="note">*현역 등록자는 제외</small></span></div>
           <div class="target no"><span class="mk">X</span><span><b>EXHIBITOR</b></span></div>
@@ -286,7 +316,7 @@
       </section>
 
       <section id="lunch">
-        <h2><span class="num">6</span>중식쿠폰</h2>
+        <h2><span class="num">7</span>중식쿠폰</h2>
         <div class="stack">
           <p>중식쿠폰은 <b>수령처에서 교환</b>합니다.</p>
           <div class="alert red">중복수령 불가</div>
@@ -294,7 +324,7 @@
       </section>
 
       <section id="program">
-        <h2><span class="num">7</span>행사일정 <small class="date">11월 13일(금)</small></h2>
+        <h2><span class="num">8</span>행사일정 <small class="date">11월 13일(금)</small></h2>
         <p class="muted" style="margin-bottom:12px">참가자가 세션·장소를 물어보면 아래 일정표로 안내하세요.</p>
         <ol class="timeline">
           <li>
